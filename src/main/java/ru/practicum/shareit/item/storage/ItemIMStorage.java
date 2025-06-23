@@ -1,13 +1,19 @@
 package ru.practicum.shareit.item.storage;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Repository
 public class ItemIMStorage implements ItemStorage{
 
     private final AtomicLong id = new AtomicLong(1);
@@ -22,7 +28,9 @@ public class ItemIMStorage implements ItemStorage{
      */
     @Override
     public Item create(Item item) {
-        return null;
+        item.setId(id.getAndIncrement());
+        items.put(item.getId(), item);
+        return item;
     }
 
     /**
@@ -34,7 +42,9 @@ public class ItemIMStorage implements ItemStorage{
      */
     @Override
     public Item update(Long itemId, Item item) {
-        return null;
+        validateItemId(itemId);
+        items.put(itemId, item);
+        return item;
     }
 
     /**
@@ -44,17 +54,20 @@ public class ItemIMStorage implements ItemStorage{
      */
     @Override
     public void delete(Long itemId) {
+        validateItemId(itemId);
+        items.remove(itemId);
     }
 
     /**
      * получение данных о предмете по коду предмета
      *
      * @param itemId код предмета
-     * @return Optional<Item>
+     * @return Item
      */
     @Override
-    public Optional<Item> get(Long itemId) {
-        return Optional.empty();
+    public Item get(Long itemId) {
+        validateItemId(itemId);
+        return items.get(itemId);
     }
 
     /**
@@ -64,8 +77,10 @@ public class ItemIMStorage implements ItemStorage{
      * @return List<Item>
      */
     @Override
-    public List<Item> findAllByOwnerId(Long ownerId) {
-        return null;
+    public List<Item> getItemsListByOwner(Long ownerId) {
+        return items.values().stream()
+                .filter(item -> Objects.equals(item.getOwnerId(), ownerId))
+                .toList();
     }
 
     /**
@@ -76,16 +91,38 @@ public class ItemIMStorage implements ItemStorage{
      */
     @Override
     public List<Item> searchAvailableByText(String text) {
+
+
         return null;
     }
 
     /**
-     * Удаление предметов у пользователя
+     * Удаление предметов владельца
      *
-     * @param userId Код пользователя
+     * @param ownerId Код владельца
      */
     @Override
-    public void deleteItemsByUserId(Long userId) {
+    public void deleteItemsByOwnerId(Long ownerId) {
 
     }
+
+    /**
+     * Проверка переданого в поиск кода предмета
+     *
+     * @param itemId код предмета
+     */
+    @Override
+    public void validateItemId(Long itemId) {
+        // Проверка на null ID
+        if (itemId == null) {
+            throw new IllegalArgumentException("ID пользователя не может быть null");
+        }
+
+        // Проверка существования пользователя
+        if (!items.containsKey(itemId)) {
+            throw new NotFoundException("Предмет с ID " + itemId + " не найден");
+        }
+    }
+
 }
+

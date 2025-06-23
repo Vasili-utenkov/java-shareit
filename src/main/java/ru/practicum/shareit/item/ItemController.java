@@ -1,5 +1,7 @@
 package ru.practicum.shareit.item;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -8,22 +10,40 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.item.service.ItemServiceFactory;
+import ru.practicum.shareit.user.service.UserServiceFactory;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
+@Slf4j
 public class ItemController {
 
+    private final ItemServiceFactory factory;
     private final ItemService itemService;
+
+    @Autowired
+    public ItemController(ItemServiceFactory factory) {
+        this.factory = factory;
+        this.itemService = factory.getItemService();
+    }
 
     // Добавление новой вещи
     @PostMapping
     public ItemDto createItem(
             @RequestHeader("X-Sharer-User-Id") Long ownerId,
             @RequestBody @Valid ItemDto item) {
-        return itemService.createItem(ownerId, item);
+
+        log.warn("ПРОВЕРКА: ");
+        log.warn("ПРОВЕРКА: " + "createItem(" +
+                "            @RequestHeader(X-Sharer-User-Id) Long {}," +
+                "            @RequestBody @Valid ItemDto {})", ownerId, item);
+        ItemDto dto = itemService.createItem(ownerId, item);
+        log.warn("ПРОВЕРКА: " + "ItemDto = " + dto);
+
+        return dto;
     }
 
     // Редактирование вещи
@@ -42,7 +62,7 @@ public class ItemController {
             @PathVariable Long itemId,
             @RequestHeader("X-Sharer-User-Id") Long ownerId
     ) {
-        itemService.deleteItem(itemId,ownerId);
+        itemService.deleteItem(itemId, ownerId);
     }
 
     // Просмотр информации о конкретной вещи по её идентификатору
@@ -66,7 +86,7 @@ public class ItemController {
     public List<ItemDto> searchItemByText(
             @RequestParam String text
     ) {
-        return itemService.searchItemByText(text);
+        return itemService.getItemsListByText(text);
     }
 
 }

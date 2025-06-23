@@ -10,7 +10,7 @@ import ru.practicum.shareit.user.storage.UserIMStorage;
 @Service("userIMService")
 @ConditionalOnProperty(name = "share.storage.type", havingValue = "memory")
 @RequiredArgsConstructor
-public class UserIMService implements UserService{
+public class UserIMService implements UserService {
 
     private final UserIMStorage userStorage;
 
@@ -33,7 +33,7 @@ public class UserIMService implements UserService{
      */
     @Override
     public UserDto getUserByID(Long userId) {
-        return null;
+        return UserMapper.toDto(userStorage.get(userId));
     }
 
     /**
@@ -43,7 +43,7 @@ public class UserIMService implements UserService{
      */
     @Override
     public void deleteUserByID(Long userId) {
-
+        userStorage.delete(userId);
     }
 
     /**
@@ -55,6 +55,9 @@ public class UserIMService implements UserService{
      */
     @Override
     public UserDto updateUserByID(Long userId, UserDto userDto) {
-        return null;
+        return UserMapper.toDto(userStorage.update(userId, UserMapper.toEntity(userDto)));
     }
+
+
+
 }

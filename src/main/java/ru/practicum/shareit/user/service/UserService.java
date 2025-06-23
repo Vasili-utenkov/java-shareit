@@ -10,7 +10,6 @@ public interface UserService {
      * @param userDto данные пользователя
      * @return UserDto
      */
-
     UserDto createUser(UserDto userDto);
 
     /**

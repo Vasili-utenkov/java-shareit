@@ -3,7 +3,6 @@ package ru.practicum.shareit.user.storage;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserStorage {
 
@@ -13,9 +12,7 @@ public interface UserStorage {
      * @param user данные о пользователе
      * @return User
      */
-
     User create(User user);
-
 
     /**
      * Изменение данных по пользователю
@@ -37,9 +34,9 @@ public interface UserStorage {
      * получение данных по пользователю
      *
      * @param userId код пользователя
-     * @return Optional<User>
+     * @return User
      */
-    Optional<User> get(Long userId);
+    User get(Long userId);
 
     /**
      * Получение списка пользователей
@@ -47,5 +44,20 @@ public interface UserStorage {
      * @return List<User>
      */
     List<User> getAll();
+
+    /**
+     * Проверка переданого в поиск кода пользователя
+     *
+     * @param userId код пользователя
+     */
+    void validateUserId(Long userId);
+
+
+    /**
+     * Проверка дублирования электронной почты
+     *
+     * @param email электронная почта
+     */
+    void validateEmail(String email);
 
 }

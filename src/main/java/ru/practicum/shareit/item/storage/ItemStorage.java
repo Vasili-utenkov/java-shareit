@@ -2,9 +2,8 @@ package ru.practicum.shareit.item.storage;
 
 
 import ru.practicum.shareit.item.model.Item;
-
 import java.util.List;
-import java.util.Optional;
+
 
 public interface ItemStorage {
 
@@ -36,9 +35,9 @@ public interface ItemStorage {
      * получение данных о предмете по коду предмета
      *
      * @param itemId  код предмета
-     * @return Optional<Item>
+     * @return Item
      */
-    Optional<Item> get(Long itemId);
+    Item get(Long itemId);
 
     /**
      * Получение списка предметов у вадельца с заданным кодом
@@ -46,7 +45,7 @@ public interface ItemStorage {
      * @param ownerId код владельца предмета
      * @return List<Item>
      */
-    List<Item> findAllByOwnerId(Long ownerId);
+    List<Item> getItemsListByOwner(Long ownerId);
 
     /**
      * получение списка предмета, содержащих текст в наименовании или описании
@@ -57,10 +56,18 @@ public interface ItemStorage {
     List<Item> searchAvailableByText(String text);
 
     /**
-     * Удаление предметов у пользователя
+     * Удаление предметов владельца
      *
-     * @param userId Код пользователя
+     * @param ownerId Код владельца
      */
-    void deleteItemsByUserId(Long userId);
+    void deleteItemsByOwnerId(Long ownerId);
+
+    /**
+     * Проверка переданого в поиск кода предмета
+     *
+     * @param itemId код предмета
+     */
+    void validateItemId(Long itemId);
+
 
 }

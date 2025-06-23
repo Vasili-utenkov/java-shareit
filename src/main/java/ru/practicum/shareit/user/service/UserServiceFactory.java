@@ -20,7 +20,7 @@ public class UserServiceFactory {
                 default -> applicationContext.getBean("userIMService", UserIMService.class);
             };
         } catch (BeansException ex) {
-            throw new IllegalStateException("No available film service implementation for type: " + storageType, ex);
+            throw new IllegalStateException("No available share service implementation for type: " + storageType, ex);
         }
     }
 }
