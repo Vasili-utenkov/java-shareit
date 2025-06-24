@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.storage;
 
 
 import ru.practicum.shareit.item.model.Item;
+
 import java.util.List;
 
 
@@ -19,7 +20,7 @@ public interface ItemStorage {
      * изменение данных предмета
      *
      * @param itemId код предмета
-     * @param item новое описание предмета
+     * @param item   новое описание предмета
      * @return Item
      */
     Item update(Long itemId, Item item);
@@ -34,7 +35,7 @@ public interface ItemStorage {
     /**
      * получение данных о предмете по коду предмета
      *
-     * @param itemId  код предмета
+     * @param itemId код предмета
      * @return Item
      */
     Item get(Long itemId);
@@ -68,6 +69,13 @@ public interface ItemStorage {
      * @param itemId код предмета
      */
     void validateItemId(Long itemId);
+
+    /**
+     * Проверка кода владельца
+     *
+     * @param ownerId Код владельца
+     */
+    void validateOwnerId(Long ownerId);
 
 
 }

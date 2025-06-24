@@ -1,20 +1,17 @@
 package ru.practicum.shareit.item.storage;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 @Repository
-public class ItemIMStorage implements ItemStorage{
+@Slf4j
+public class ItemIMStorage implements ItemStorage {
 
     private final AtomicLong id = new AtomicLong(1);
     private final Map<Long, Item> items = new HashMap<>();
@@ -92,8 +89,28 @@ public class ItemIMStorage implements ItemStorage{
     @Override
     public List<Item> searchAvailableByText(String text) {
 
+        final String searchText = text.trim().toLowerCase();
 
-        return null;
+        log.warn("ПРОВЕРКА: ");
+        log.warn("ПРОВЕРКА: " + "searchAvailableByText(String {})", searchText);
+        List<Item> list = new ArrayList<>();
+
+        if (searchText == null || searchText.isBlank()) {
+            return list;
+        }
+
+        list = items.values().stream()
+                .filter(Item::getAvailable) // Только доступные предметы
+                .filter(item ->
+                        (item.getName() != null && !item.getName().isBlank()
+                                && item.getName().toLowerCase().contains(searchText))
+                        || ( item.getDescription() != null && !item.getDescription().isBlank()
+                                && item.getDescription().toLowerCase().contains(searchText)))
+                .collect(Collectors.toList());
+
+        log.warn("ПРОВЕРКА: " + "List<Item> = " + list);
+
+        return list;
     }
 
     /**
@@ -124,5 +141,17 @@ public class ItemIMStorage implements ItemStorage{
         }
     }
 
+    /**
+     * Проверка кода владельца
+     *
+     * @param ownerId Код владельца
+     */
+    @Override
+    public void validateOwnerId(Long ownerId) {
+        // Проверка на null ID
+        if (ownerId == null) {
+            throw new IllegalArgumentException("ID владельца не может быть null");
+        }
+    }
 }
 

@@ -2,8 +2,10 @@ package ru.practicum.shareit.item.service;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
@@ -15,6 +17,7 @@ import java.util.List;
 @Service("itemIMService")
 @ConditionalOnProperty(name = "share.storage.type", havingValue = "memory")
 @RequiredArgsConstructor
+@Slf4j
 public class ItemIMService implements ItemService {
 
     private final ItemIMStorage itemStorage;
@@ -31,9 +34,11 @@ public class ItemIMService implements ItemService {
     public ItemDto createItem(Long ownerId, ItemDto itemDto) {
         Item item = ItemMapper.toEntity(itemDto);
         // Проверка
-        userStorage.validateUserId(item.getOwnerId());
         item.setOwnerId(ownerId);
-        return ItemMapper.toDto(item);
+        userStorage.validateUserId(item.getOwnerId());
+        itemStorage.validateOwnerId(ownerId);
+
+        return ItemMapper.toDto(itemStorage.create(item));
     }
 
     /**
@@ -72,8 +77,12 @@ public class ItemIMService implements ItemService {
      */
     @Override
     public ItemDto updateItemByItemID(Long ownerId, Long itemId, ItemDto itemDto) {
+        if (!ownerId.equals(getItemByItemID(itemId).getOwnerId())) {
+            throw new NotFoundException("Неверный код владелца предмета " + ownerId);
+        }
         Item item = ItemMapper.toEntity(itemDto);
         item.setOwnerId(ownerId);
+        item.setId(itemId);
         return ItemMapper.toDto(itemStorage.update(itemId, item));
     }
 
@@ -96,6 +105,17 @@ public class ItemIMService implements ItemService {
      */
     @Override
     public List<ItemDto> getItemsListByText(String text) {
-        return null;
+
+        log.warn("ПРОВЕРКА: ");
+        log.warn("ПРОВЕРКА: " + "getItemsListByText(String {})", text);
+
+
+        if (text == null || text.isBlank()) {
+            return List.of();
+        }
+
+        List<ItemDto> list = ItemMapper.toDto(itemStorage.searchAvailableByText(text));
+        log.warn("ПРОВЕРКА: " + "List<ItemDto> = " + list);
+        return list;
     }
 }

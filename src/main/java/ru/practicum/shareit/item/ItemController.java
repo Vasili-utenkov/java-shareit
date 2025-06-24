@@ -53,7 +53,15 @@ public class ItemController {
             @PathVariable Long itemId,
             @RequestBody ItemDto item
     ) {
-        return itemService.updateItemByItemID(ownerId, itemId, item);
+        log.warn("ПРОВЕРКА: ");
+        log.warn("ПРОВЕРКА: " + "updateItemByItemID(" +
+                "            @RequestHeader(X-Sharer-User-Id) Long {}," +
+                "            @PathVariable Long {}," +
+                "            @RequestBody ItemDto {}}", ownerId, itemId, item);
+        ItemDto dto = itemService.updateItemByItemID(ownerId, itemId, item);
+        log.warn("ПРОВЕРКА: " + "ItemDto = " + dto);
+
+        return dto;
     }
 
     // Удаление вещи
@@ -83,10 +91,17 @@ public class ItemController {
 
     // Поиск вещи потенциальным арендатором по имени или описанию.
     @GetMapping("/search")
-    public List<ItemDto> searchItemByText(
+    public List<ItemDto> searchItemsByText(
             @RequestParam String text
     ) {
-        return itemService.getItemsListByText(text);
+
+        log.warn("ПРОВЕРКА: ");
+        log.warn("ПРОВЕРКА: " + "searchItemByText(" +
+                "            @RequestParam String {}" +
+                "    )", text);
+        List<ItemDto> list = itemService.getItemsListByText(text);
+        log.warn("ПРОВЕРКА: " + "List<ItemDto> = " + list);
+        return list;
     }
 
 }
