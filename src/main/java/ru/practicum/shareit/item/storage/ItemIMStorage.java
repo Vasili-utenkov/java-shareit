@@ -104,7 +104,7 @@ public class ItemIMStorage implements ItemStorage {
                 .filter(item ->
                         (item.getName() != null && !item.getName().isBlank()
                                 && item.getName().toLowerCase().contains(searchText))
-                        || ( item.getDescription() != null && !item.getDescription().isBlank()
+                        || (item.getDescription() != null && !item.getDescription().isBlank()
                                 && item.getDescription().toLowerCase().contains(searchText)))
                 .collect(Collectors.toList());
 
