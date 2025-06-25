@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.storage;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.NotFoundException;
@@ -24,7 +25,7 @@ public class ItemIMStorage implements ItemStorage {
      * @return Item
      */
     @Override
-    public Item create(Item item) {
+    public Item create(@Valid Item item) {
         item.setId(id.getAndIncrement());
         items.put(item.getId(), item);
         return item;
@@ -38,7 +39,7 @@ public class ItemIMStorage implements ItemStorage {
      * @return Item
      */
     @Override
-    public Item update(Long itemId, Item item) {
+    public Item update(Long itemId, @Valid Item item) {
         validateItemId(itemId);
         items.put(itemId, item);
         return item;
@@ -99,14 +100,31 @@ public class ItemIMStorage implements ItemStorage {
             return list;
         }
 
+        log.warn("ПРОВЕРКА: " + "searchAvailableByText(items.values(): {})", items.values());
+
         list = items.values().stream()
-                .filter(Item::getAvailable) // Только доступные предметы
+                .filter(item -> {
+                    // Явная проверка available != null
+                    Boolean available = item.getAvailable();
+                    return available != null && available;
+                })
                 .filter(item ->
                         (item.getName() != null && !item.getName().isBlank()
                                 && item.getName().toLowerCase().contains(searchText))
                         || (item.getDescription() != null && !item.getDescription().isBlank()
                                 && item.getDescription().toLowerCase().contains(searchText)))
                 .collect(Collectors.toList());
+
+//        for (Item item : items.values()) {
+//            if (item.getAvailable()) {
+//                if (
+//                        item.getDescription().toLowerCase().contains(searchText)
+//                                || item.getName().toLowerCase().contains(searchText)
+//                ) {
+//                    list.add(item);
+//                }
+//            }
+//        }
 
         log.warn("ПРОВЕРКА: " + "List<Item> = " + list);
 
