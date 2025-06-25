@@ -106,16 +106,10 @@ public class ItemIMService implements ItemService {
     @Override
     public List<ItemDto> getItemsListByText(String text) {
 
-        log.warn("ПРОВЕРКА: ");
-        log.warn("ПРОВЕРКА: " + "getItemsListByText(String {})", text);
-
-
         if (text == null || text.isBlank()) {
             return List.of();
         }
-
         List<ItemDto> list = ItemMapper.toDto(itemStorage.searchAvailableByText(text));
-        log.warn("ПРОВЕРКА: " + "List<ItemDto> = " + list);
         return list;
     }
 }

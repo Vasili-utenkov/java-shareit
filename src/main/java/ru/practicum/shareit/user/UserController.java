@@ -31,10 +31,6 @@ public class UserController {
     @PostMapping
     public UserDto createUser(@Valid @RequestBody UserDto userDto) {
         UserDto dto = userService.createUser(userDto);
-        log.warn("ПРОВЕРКА: ");
-        log.warn("ПРОВЕРКА: " + "createUser(@Valid @RequestBody UserDto {})", userDto);
-        log.warn("ПРОВЕРКА: " + "dto = " + dto);
-
         return dto;
     }
 
@@ -54,11 +50,6 @@ public class UserController {
     @PatchMapping("{userId}")
     public UserDto updateUserByID(@PathVariable Long userId, @RequestBody UserDto userDto) {
         UserDto dto = userService.updateUserByID(userId, userDto);
-
-        log.warn("ПРОВЕРКА: ");
-        log.warn("ПРОВЕРКА: " + "updateUserByID(@PathVariable Long {}, @RequestBody UserDto {})", userId, userDto);
-        log.warn("ПРОВЕРКА: " + "dto = " + dto);
-
         return dto;
     }
 }

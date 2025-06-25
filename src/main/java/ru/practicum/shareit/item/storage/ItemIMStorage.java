@@ -92,15 +92,11 @@ public class ItemIMStorage implements ItemStorage {
 
         final String searchText = text.trim().toLowerCase();
 
-        log.warn("ПРОВЕРКА: ");
-        log.warn("ПРОВЕРКА: " + "searchAvailableByText(String {})", searchText);
         List<Item> list = new ArrayList<>();
 
         if (searchText == null || searchText.isBlank()) {
             return list;
         }
-
-        log.warn("ПРОВЕРКА: " + "searchAvailableByText(items.values(): {})", items.values());
 
         list = items.values().stream()
                 .filter(item -> {
@@ -114,19 +110,6 @@ public class ItemIMStorage implements ItemStorage {
                         || (item.getDescription() != null && !item.getDescription().isBlank()
                                 && item.getDescription().toLowerCase().contains(searchText)))
                 .collect(Collectors.toList());
-
-//        for (Item item : items.values()) {
-//            if (item.getAvailable()) {
-//                if (
-//                        item.getDescription().toLowerCase().contains(searchText)
-//                                || item.getName().toLowerCase().contains(searchText)
-//                ) {
-//                    list.add(item);
-//                }
-//            }
-//        }
-
-        log.warn("ПРОВЕРКА: " + "List<Item> = " + list);
 
         return list;
     }

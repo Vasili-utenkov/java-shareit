@@ -34,14 +34,7 @@ public class ItemController {
     public ItemDto createItem(
             @RequestHeader("X-Sharer-User-Id") Long ownerId,
             @RequestBody @Valid ItemDto item) {
-
-        log.warn("ПРОВЕРКА: ");
-        log.warn("ПРОВЕРКА: " + "createItem(" +
-                "            @RequestHeader(X-Sharer-User-Id) Long {}," +
-                "            @RequestBody @Valid ItemDto {})", ownerId, item);
         ItemDto dto = itemService.createItem(ownerId, item);
-        log.warn("ПРОВЕРКА: " + "ItemDto = " + dto);
-
         return dto;
     }
 
@@ -52,14 +45,7 @@ public class ItemController {
             @PathVariable Long itemId,
             @RequestBody ItemDto item
     ) {
-        log.warn("ПРОВЕРКА: ");
-        log.warn("ПРОВЕРКА: " + "updateItemByItemID(" +
-                "            @RequestHeader(X-Sharer-User-Id) Long {}," +
-                "            @PathVariable Long {}," +
-                "            @RequestBody ItemDto {}}", ownerId, itemId, item);
         ItemDto dto = itemService.updateItemByItemID(ownerId, itemId, item);
-        log.warn("ПРОВЕРКА: " + "ItemDto = " + dto);
-
         return dto;
     }
 
@@ -93,13 +79,7 @@ public class ItemController {
     public List<ItemDto> searchItemsByText(
             @RequestParam String text
     ) {
-
-        log.warn("ПРОВЕРКА: ");
-        log.warn("ПРОВЕРКА: " + "searchItemByText(" +
-                "            @RequestParam String {}" +
-                "    )", text);
         List<ItemDto> list = itemService.getItemsListByText(text);
-        log.warn("ПРОВЕРКА: " + "List<ItemDto> = " + list);
         return list;
     }
 
