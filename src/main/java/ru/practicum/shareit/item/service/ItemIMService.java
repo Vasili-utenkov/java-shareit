@@ -11,7 +11,6 @@ import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemIMStorage;
 import ru.practicum.shareit.user.service.UserService;
-import ru.practicum.shareit.user.storage.UserIMStorage;
 
 import java.util.List;
 

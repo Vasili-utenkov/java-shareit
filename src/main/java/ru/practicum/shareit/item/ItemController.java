@@ -34,8 +34,8 @@ public class ItemController {
             @RequestHeader("X-Sharer-User-Id") Long ownerId,
             @RequestBody @Valid ItemDto item) {
         log.warn("Добавление новой вещи. @PostMapping (/items) ");
-        log.warn("createItem(@RequestHeader(X-Sharer-User-Id) Long {}, @RequestBody @Valid ItemDto {})"
-                , ownerId, item);
+        log.warn("createItem(@RequestHeader(X-Sharer-User-Id) Long {}, @RequestBody @Valid ItemDto {})",
+                ownerId, item);
         ItemDto dto = itemService.createItem(ownerId, item);
         return dto;
     }
@@ -47,8 +47,8 @@ public class ItemController {
             @RequestBody ItemDto item
     ) {
         log.warn("Редактирование вещи. @PatchMapping (/items/{itemId}) ");
-        log.warn("updateItemByItemID(@RequestHeader(X-Sharer-User-Id) Long {}, @PathVariable Long {}, @RequestBody ItemDto {})"
-                , ownerId, itemId, item);
+        log.warn("updateItemByItemID(@RequestHeader(X-Sharer-User-Id) Long {}, @PathVariable Long {}, @RequestBody ItemDto {})",
+                ownerId, itemId, item);
         ItemDto dto = itemService.updateItemByItemID(ownerId, itemId, item);
         return dto;
     }
@@ -59,8 +59,8 @@ public class ItemController {
             @RequestHeader("X-Sharer-User-Id") Long ownerId
     ) {
         log.warn("Удаление вещи. @DeleteMapping (/items/{itemId}) ");
-        log.warn("deleteItem(@PathVariable Long {}, @RequestHeader(X-Sharer-User-Id) Long {})"
-                , itemId, ownerId);
+        log.warn("deleteItem(@PathVariable Long {}, @RequestHeader(X-Sharer-User-Id) Long {})",
+                itemId, ownerId);
         itemService.deleteItem(itemId, ownerId);
     }
 
@@ -69,8 +69,8 @@ public class ItemController {
             @PathVariable Long itemId
     ) {
         log.warn("Просмотр информации о конкретной вещи по её идентификатору. @GetMapping (/items/{itemId}) ");
-        log.warn("getItemByItemID(@PathVariable Long {})"
-                , itemId);
+        log.warn("getItemByItemID(@PathVariable Long {})",
+                itemId);
         ItemDto dto = itemService.getItemByItemID(itemId);
         return dto;
     }
@@ -80,8 +80,8 @@ public class ItemController {
             @RequestHeader("X-Sharer-User-Id") Long ownerId
     ) {
         log.warn("Просмотр владельцем списка всех его вещей с указанием названия и описания для каждой из них. @GetMapping (/items)");
-        log.warn("getItemsListByOwner(@RequestHeader(X-Sharer-User-Id) Long {}"
-                , ownerId);
+        log.warn("getItemsListByOwner(@RequestHeader(X-Sharer-User-Id) Long {}",
+                ownerId);
         List<ItemDto> list = itemService.getItemsListByOwner(ownerId);
         return list;
     }
@@ -91,8 +91,8 @@ public class ItemController {
             @RequestParam String text
     ) {
         log.warn("Поиск вещи потенциальным арендатором по имени или описанию. @GetMapping (/items/search) ");
-        log.warn("searchItemsByText(@RequestParam String {})"
-                , text);
+        log.warn("searchItemsByText(@RequestParam String {})",
+                text);
         List<ItemDto> list = itemService.getItemsListByText(text);
         return list;
     }
