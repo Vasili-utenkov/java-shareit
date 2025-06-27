@@ -2,7 +2,6 @@ package ru.practicum.shareit.user.storage;
 
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.DataConflictException;
-import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.*;
@@ -22,7 +21,6 @@ public class UserIMStorage implements UserStorage {
      */
     @Override
     public User create(User user) {
-        validateEmail(user.getEmail());
         user.setId(id.getAndIncrement());
         users.put(user.getId(), user);
         return user;
@@ -35,8 +33,6 @@ public class UserIMStorage implements UserStorage {
      */
     @Override
     public User update(Long userId, User user) {
-        validateUserId(userId);
-        validateEmail(user.getEmail());
         // Полная замена объекта
         user.setId(userId);
         users.put(userId, user);
@@ -48,7 +44,6 @@ public class UserIMStorage implements UserStorage {
      */
     @Override
     public void delete(Long userId) {
-        validateUserId(userId);
         users.remove(userId);
     }
 
@@ -58,7 +53,6 @@ public class UserIMStorage implements UserStorage {
      */
     @Override
     public User get(Long userId) {
-        validateUserId(userId);
         return users.get(userId);
     }
 
@@ -74,32 +68,12 @@ public class UserIMStorage implements UserStorage {
     }
 
     /**
-     * Проверка переданого в поиск кода пользователя
-     *
-     * @param userId код пользователя
-     * @throws IllegalArgumentException "ID пользователя не может быть null"
-     * @throws NotFoundException "Пользователь с ID " + userId + " не найден"
-     */
-    @Override
-    public void validateUserId(Long userId) {
-        // Проверка на null ID
-        if (userId == null) {
-            throw new IllegalArgumentException("ID пользователя не может быть null");
-        }
-
-        // Проверка существования пользователя
-        if (!users.containsKey(userId)) {
-            throw new NotFoundException("Пользователь с ID " + userId + " не найден");
-        }
-    }
-
-    /**
      * Проверка дублирования электронной почты
      *
      * @param email электронная почта
      */
     @Override
-    public void validateEmail(String email) {
+    public boolean existsEmail(String email) {
         // Проверка на дубликат через count()
         long count = users.values().stream()
                 .map(User::getEmail)
@@ -108,8 +82,7 @@ public class UserIMStorage implements UserStorage {
                 .filter(e -> e.equalsIgnoreCase(email))
                 .count();
 
-        if (count > 0) {
-            throw new DataConflictException("Пользователь с email '" + email + "' уже существует");
-        }
+        return count > 0;
+
     }
 }

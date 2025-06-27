@@ -1,17 +1,18 @@
 package ru.practicum.shareit.item.storage;
 
-import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Repository
-@Slf4j
 public class ItemIMStorage implements ItemStorage {
 
     private final AtomicLong id = new AtomicLong(1);
@@ -25,7 +26,7 @@ public class ItemIMStorage implements ItemStorage {
      * @return Item
      */
     @Override
-    public Item create(@Valid Item item) {
+    public Item create(Item item) {
         item.setId(id.getAndIncrement());
         items.put(item.getId(), item);
         return item;
@@ -39,9 +40,26 @@ public class ItemIMStorage implements ItemStorage {
      * @return Item
      */
     @Override
-    public Item update(Long itemId, @Valid Item item) {
-        validateItemId(itemId);
-        items.put(itemId, item);
+    public Item update(Long itemId, Item item) {
+        Item existingItem = items.get(itemId);
+
+        if (item.getName() != null) {
+            existingItem.setName(item.getName());
+        }
+        if (item.getDescription() != null) {
+            existingItem.setDescription(item.getDescription());
+        }
+        if (item.getAvailable() != null) {
+            existingItem.setAvailable(item.getAvailable());
+        }
+        if (item.getOwnerId() != null) {
+            existingItem.setOwnerId(item.getOwnerId());
+        }
+        if (item.getRequestId() != null) {
+            existingItem.setRequestId(item.getRequestId());
+        }
+
+        items.put(itemId, existingItem);
         return item;
     }
 
@@ -52,7 +70,6 @@ public class ItemIMStorage implements ItemStorage {
      */
     @Override
     public void delete(Long itemId) {
-        validateItemId(itemId);
         items.remove(itemId);
     }
 
@@ -64,7 +81,6 @@ public class ItemIMStorage implements ItemStorage {
      */
     @Override
     public Item get(Long itemId) {
-        validateItemId(itemId);
         return items.get(itemId);
     }
 
@@ -94,65 +110,14 @@ public class ItemIMStorage implements ItemStorage {
 
         List<Item> list = new ArrayList<>();
 
-        if (searchText == null || searchText.isBlank()) {
-            return list;
-        }
-
         list = items.values().stream()
-                .filter(item -> {
-                    // Явная проверка available != null
-                    Boolean available = item.getAvailable();
-                    return available != null && available;
-                })
-                .filter(item ->
-                        (item.getName() != null && !item.getName().isBlank()
-                                && item.getName().toLowerCase().contains(searchText))
-                        || (item.getDescription() != null && !item.getDescription().isBlank()
-                                && item.getDescription().toLowerCase().contains(searchText)))
+                .filter(Item::getAvailable)
+                .filter(item -> (item.getName().toLowerCase().contains(searchText))
+                || item.getDescription().toLowerCase().contains(searchText))
                 .collect(Collectors.toList());
 
         return list;
     }
 
-    /**
-     * Удаление предметов владельца
-     *
-     * @param ownerId Код владельца
-     */
-    @Override
-    public void deleteItemsByOwnerId(Long ownerId) {
-
-    }
-
-    /**
-     * Проверка переданого в поиск кода предмета
-     *
-     * @param itemId код предмета
-     */
-    @Override
-    public void validateItemId(Long itemId) {
-        // Проверка на null ID
-        if (itemId == null) {
-            throw new IllegalArgumentException("ID пользователя не может быть null");
-        }
-
-        // Проверка существования пользователя
-        if (!items.containsKey(itemId)) {
-            throw new NotFoundException("Предмет с ID " + itemId + " не найден");
-        }
-    }
-
-    /**
-     * Проверка кода владельца
-     *
-     * @param ownerId Код владельца
-     */
-    @Override
-    public void validateOwnerId(Long ownerId) {
-        // Проверка на null ID
-        if (ownerId == null) {
-            throw new IllegalArgumentException("ID владельца не может быть null");
-        }
-    }
 }
 

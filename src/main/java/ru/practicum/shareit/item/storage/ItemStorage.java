@@ -56,26 +56,5 @@ public interface ItemStorage {
      */
     List<Item> searchAvailableByText(String text);
 
-    /**
-     * Удаление предметов владельца
-     *
-     * @param ownerId Код владельца
-     */
-    void deleteItemsByOwnerId(Long ownerId);
-
-    /**
-     * Проверка переданого в поиск кода предмета
-     *
-     * @param itemId код предмета
-     */
-    void validateItemId(Long itemId);
-
-    /**
-     * Проверка кода владельца
-     *
-     * @param ownerId Код владельца
-     */
-    void validateOwnerId(Long ownerId);
-
 
 }

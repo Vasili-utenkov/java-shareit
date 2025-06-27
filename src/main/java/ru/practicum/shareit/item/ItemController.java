@@ -29,56 +29,70 @@ public class ItemController {
         this.itemService = factory.getItemService();
     }
 
-    // Добавление новой вещи
     @PostMapping
     public ItemDto createItem(
             @RequestHeader("X-Sharer-User-Id") Long ownerId,
             @RequestBody @Valid ItemDto item) {
+        log.warn("Добавление новой вещи. @PostMapping (/items) ");
+        log.warn("createItem(@RequestHeader(X-Sharer-User-Id) Long {}, @RequestBody @Valid ItemDto {})"
+                , ownerId, item);
         ItemDto dto = itemService.createItem(ownerId, item);
         return dto;
     }
 
-    // Редактирование вещи
     @PatchMapping("/{itemId}")
     public ItemDto updateItemByItemID(
             @RequestHeader("X-Sharer-User-Id") Long ownerId,
             @PathVariable Long itemId,
             @RequestBody ItemDto item
     ) {
+        log.warn("Редактирование вещи. @PatchMapping (/items/{itemId}) ");
+        log.warn("updateItemByItemID(@RequestHeader(X-Sharer-User-Id) Long {}, @PathVariable Long {}, @RequestBody ItemDto {})"
+                , ownerId, itemId, item);
         ItemDto dto = itemService.updateItemByItemID(ownerId, itemId, item);
         return dto;
     }
 
-    // Удаление вещи
     @DeleteMapping("/{itemId}")
     public void deleteItem(
             @PathVariable Long itemId,
             @RequestHeader("X-Sharer-User-Id") Long ownerId
     ) {
+        log.warn("Удаление вещи. @DeleteMapping (/items/{itemId}) ");
+        log.warn("deleteItem(@PathVariable Long {}, @RequestHeader(X-Sharer-User-Id) Long {})"
+                , itemId, ownerId);
         itemService.deleteItem(itemId, ownerId);
     }
 
-    // Просмотр информации о конкретной вещи по её идентификатору
-    @GetMapping("{itemId}")
+    @GetMapping("/{itemId}")
     public ItemDto getItemByItemID(
             @PathVariable Long itemId
     ) {
-        return itemService.getItemByItemID(itemId);
+        log.warn("Просмотр информации о конкретной вещи по её идентификатору. @GetMapping (/items/{itemId}) ");
+        log.warn("getItemByItemID(@PathVariable Long {})"
+                , itemId);
+        ItemDto dto = itemService.getItemByItemID(itemId);
+        return dto;
     }
 
-    // Просмотр владельцем списка всех его вещей с указанием названия и описания для каждой из них.
     @GetMapping
     public List<ItemDto> getItemsListByOwner(
             @RequestHeader("X-Sharer-User-Id") Long ownerId
     ) {
-        return itemService.getItemsListByOwner(ownerId);
+        log.warn("Просмотр владельцем списка всех его вещей с указанием названия и описания для каждой из них. @GetMapping (/items)");
+        log.warn("getItemsListByOwner(@RequestHeader(X-Sharer-User-Id) Long {}"
+                , ownerId);
+        List<ItemDto> list = itemService.getItemsListByOwner(ownerId);
+        return list;
     }
 
-    // Поиск вещи потенциальным арендатором по имени или описанию.
     @GetMapping("/search")
     public List<ItemDto> searchItemsByText(
             @RequestParam String text
     ) {
+        log.warn("Поиск вещи потенциальным арендатором по имени или описанию. @GetMapping (/items/search) ");
+        log.warn("searchItemsByText(@RequestParam String {})"
+                , text);
         List<ItemDto> list = itemService.getItemsListByText(text);
         return list;
     }

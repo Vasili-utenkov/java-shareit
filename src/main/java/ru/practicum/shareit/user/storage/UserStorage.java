@@ -45,19 +45,13 @@ public interface UserStorage {
      */
     List<User> getAll();
 
-    /**
-     * Проверка переданого в поиск кода пользователя
-     *
-     * @param userId код пользователя
-     */
-    void validateUserId(Long userId);
-
 
     /**
-     * Проверка дублирования электронной почты
+     * Проверка существования электронной почты
      *
      * @param email электронная почта
+     * @return boolean
      */
-    void validateEmail(String email);
+    boolean existsEmail(String email);
 
 }

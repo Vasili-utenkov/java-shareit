@@ -27,28 +27,33 @@ public class UserController {
         this.userService = factory.getUserService();
     }
 
-    // Создание пользователя
     @PostMapping
     public UserDto createUser(@Valid @RequestBody UserDto userDto) {
+        log.warn("Создание пользователя. @PostMapping (/users) ");
+        log.warn("createUser(@Valid @RequestBody UserDto {})", userDto);
         UserDto dto = userService.createUser(userDto);
         return dto;
     }
 
-    // Получение пользователя по коду пользователя
-    @GetMapping("{userId}")
+    @GetMapping("/{userId}")
     public UserDto getUserByID(@PathVariable Long userId) {
-        return userService.getUserByID(userId);
+        log.warn("Получение пользователя по коду пользователя. @GetMapping (/users/{userId}) ");
+        log.warn("getUserByID(@PathVariable Long {})", userId);
+        UserDto dto = userService.getUserByID(userId);
+        return dto;
     }
 
-    // Удаление пользователя по коду пользователя
-    @DeleteMapping("{userId}")
+    @DeleteMapping("/{userId}")
     public void deleteUserByID(@PathVariable Long userId) {
+        log.warn("Удаление пользователя по коду пользователя. @DeleteMapping (/users/{userId}) ");
+        log.warn("deleteUserByID(@PathVariable Long {})", userId);
         userService.deleteUserByID(userId);
     }
 
-    // Изменение пользователя по коду пользователя
-    @PatchMapping("{userId}")
+    @PatchMapping("/{userId}")
     public UserDto updateUserByID(@PathVariable Long userId, @RequestBody UserDto userDto) {
+        log.warn("Изменение пользователя по коду пользователя. @PatchMapping (/users/{userId}) ");
+        log.warn("updateUserByID(@PathVariable Long {}, @RequestBody UserDto {})", userId, userDto);
         UserDto dto = userService.updateUserByID(userId, userDto);
         return dto;
     }
