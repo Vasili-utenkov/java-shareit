@@ -35,7 +35,7 @@ public class ExceptionController {
 
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(ItemNotAvailableException.class)
-    public Map<String, String> ItemNotAvailableException(ItemNotAvailableException e) {
+    public Map<String, String> itemNotAvailableException(ItemNotAvailableException e) {
         log.warn("ПРОВЕРКА: ExceptionController: ItemNotAvailableException: " + e.getMessage());
         return Map.of("error", e.getMessage());
     }
@@ -43,14 +43,14 @@ public class ExceptionController {
 //    @ResponseStatus(HttpStatus.FORBIDDEN) // 403
     @ResponseStatus(HttpStatus.NOT_FOUND) // 404
     @ExceptionHandler(UserNotExistsException.class)
-    public Map<String, String> UserNotExistsException(UserNotExistsException e) {
+    public Map<String, String> userNotExistsException(UserNotExistsException e) {
         log.warn("ПРОВЕРКА: ExceptionController: UserNotExistsException: " + e.getMessage());
         return Map.of("error", e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST) // 400
     @ExceptionHandler(NotAvailableForOrderException.class)
-    public Map<String, String> NotAvailableForOrderException(NotAvailableForOrderException e) {
+    public Map<String, String> notAvailableForOrderException(NotAvailableForOrderException e) {
         log.warn("ПРОВЕРКА: ExceptionController: NotAvailableForOrderException: " + e.getMessage());
         return Map.of("error", e.getMessage());
     }
