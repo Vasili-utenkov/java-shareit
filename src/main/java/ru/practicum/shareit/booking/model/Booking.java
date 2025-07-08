@@ -43,4 +43,13 @@ public class Booking {
 
     @Column(nullable = false)
     private LocalDateTime created;
+
+    @PrePersist
+    protected void onCreate() {
+        created = LocalDateTime.now();
+        status = BookingStatus.WAITING;
+    }
+
+
+
 }

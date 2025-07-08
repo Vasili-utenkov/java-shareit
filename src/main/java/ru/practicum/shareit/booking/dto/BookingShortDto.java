@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.validators.StartBeforeEnd;
 
 import java.time.LocalDateTime;
@@ -17,11 +16,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @StartBeforeEnd
 public class BookingShortDto {
+    private Long itemId;
     @NotNull(message = "Дата начала аренды должна быть")
     @FutureOrPresent(message = "Дата начала аренды не должна быть в прошлом")
     private LocalDateTime start;
     @NotNull(message = "Дата окончания аренды должна быть")
     @FutureOrPresent(message = "Дата окончания аренды не должна быть в прошлом")
     private LocalDateTime end;
-    private ItemDto item;
 }

@@ -5,7 +5,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingShortDto;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.enums.BookingState;
 import ru.practicum.shareit.enums.BookingStatus;
 
 import java.util.List;
@@ -21,7 +23,7 @@ public class BookingController {
     @PostMapping
     public BookingDto createBooking(
             @RequestHeader("X-Sharer-User-Id") Long bookerId,
-            @Valid @RequestBody BookingDto bookingDto
+            @Valid @RequestBody BookingShortDto bookingDto
     ) {
         log.warn("Добавление бронирования. @PostMapping (/bookings) ");
         log.warn("createBooking( @RequestHeader(X-Sharer-User-Id) Long {}, @Valid @RequestBody BookingShortDto {} )",
@@ -62,10 +64,11 @@ public class BookingController {
     @GetMapping
     public List<BookingDto> getUserBookings(
             @RequestHeader("X-Sharer-User-Id") Long userId,
-            @RequestParam(name = "state", defaultValue = "ALL") BookingStatus state
+            @RequestParam(name = "state", defaultValue = "ALL") BookingState state
     ) {
         log.warn("Получение списка бронирований для пользователя. @GetMapping (/bookings)");
-        log.warn("getUserBookings(@RequestHeader(X-Sharer-User-Id) Long {}, @RequestParam String {})",
+        log.warn("getUserBookings(@RequestHeader(X-Sharer-User-Id) Long {}," +
+                        " @RequestParam(name = state, defaultValue = ALL) BookingState {})",
                 userId, state);
         List<BookingDto> bookingDtoList = bookingService.getUserBookings(userId, state);
         return bookingDtoList;
@@ -74,11 +77,11 @@ public class BookingController {
     @GetMapping("/owner")
     public List<BookingDto> getOwnerBookings(
             @RequestHeader("X-Sharer-User-Id") Long ownerId,
-            @RequestParam(name = "state", defaultValue = "ALL") BookingStatus state
+            @RequestParam(name = "state", defaultValue = "ALL") BookingState state
     ) {
         log.warn("Получение списка бронирований всех вещей по владельцу вещи. @GetMapping (/bookings/owner)");
         log.warn("getOwnerBookings(@RequestHeader(X-Sharer-User-Id) Long {}," +
-                " @RequestParam(name = state, defaultValue = ALL) BookingStatus {})",
+                        " @RequestParam(name = state, defaultValue = ALL) BookingState {})",
                 ownerId, state);
         List<BookingDto> bookingDtoList = bookingService.getOwnerBookings(ownerId, state);
         return bookingDtoList;

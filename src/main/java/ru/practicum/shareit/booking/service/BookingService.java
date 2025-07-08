@@ -1,6 +1,8 @@
 package ru.practicum.shareit.booking.service;
 
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingShortDto;
+import ru.practicum.shareit.enums.BookingState;
 import ru.practicum.shareit.enums.BookingStatus;
 
 import java.util.List;
@@ -14,7 +16,7 @@ public interface BookingService {
      * @param bookerId идентификатор пользователя, создающего бронирование
      * @return BookingDto созданное бронирование со статусом WAITING
      */
-    BookingDto createBooking(Long bookerId, BookingDto bookingDto);
+    BookingDto createBooking(Long bookerId, BookingShortDto bookingDto);
 
     /**
      * Подтверждение или отклонение бронирования владельцем вещи
@@ -42,7 +44,7 @@ public interface BookingService {
      * @param state статус бронирования (ALL, CURRENT, PAST, FUTURE, WAITING, REJECTED)
      * @return List<BookingDto> список бронирований, отсортированный по дате начала (новые → старые)
      */
-    List<BookingDto> getUserBookings(Long userId, BookingStatus state);
+    List<BookingDto> getUserBookings(Long userId, BookingState state);
 
     /**
      * Получение списка бронирований для всех вещей владельца
@@ -51,5 +53,5 @@ public interface BookingService {
      * @param state статус бронирования (ALL, CURRENT, PAST, FUTURE, WAITING, REJECTED)
      * @return List<BookingDto> список бронирований, отсортированный по дате начала (новые → старые)
      */
-    List<BookingDto> getOwnerBookings(Long ownerId, BookingStatus state);
+    List<BookingDto> getOwnerBookings(Long ownerId, BookingState state);
 }

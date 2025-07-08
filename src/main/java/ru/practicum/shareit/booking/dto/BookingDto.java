@@ -18,6 +18,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class BookingDto {
     private Long id;
+    private ItemDto item;
+    private UserDto booker;
     @NotNull(message = "Дата начала аренды должна быть")
     @FutureOrPresent(message = "Дата начала аренды не должна быть в прошлом")
     private LocalDateTime start;
@@ -25,6 +27,4 @@ public class BookingDto {
     @FutureOrPresent(message = "Дата окончания аренды не должна быть в прошлом")
     private LocalDateTime end;
     private BookingStatus status;
-    private UserDto booker;
-    private ItemDto item;
 }

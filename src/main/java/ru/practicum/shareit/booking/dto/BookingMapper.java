@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dto.UserMapper;
+import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 
@@ -39,6 +41,15 @@ public class BookingMapper {
                 .end(bookingDto.getEnd())
                 .created(LocalDateTime.now()) // Устанавливаем текущее время при создании
                 .build();
+    }
+
+    public static Booking toEntity(BookingShortDto dto, User booker, Item item) {
+        Booking booking = new Booking();
+        booking.setItem(item);
+        booking.setBooker(booker);
+        booking.setStart(dto.getStart());
+        booking.setEnd(dto.getEnd());
+        return booking;
     }
 
     public static void updateEntityFromDto(BookingDto bookingDto, Booking booking) {
