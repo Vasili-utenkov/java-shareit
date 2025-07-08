@@ -1,19 +1,28 @@
 package ru.practicum.shareit.item.dto;
 
+import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.dto.ItemRequestMapper;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.user.dto.UserMapper;
+import ru.practicum.shareit.user.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
-
+@Component
 public class ItemMapper {
 
     public static Item toEntity(ItemDto itemDto) {
         return Item.builder()
+                .id(itemDto.getId())
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
                 .available(itemDto.getAvailable())
-                .ownerId(itemDto.getOwnerId())
-                .requestId(itemDto.getRequestId())
+                .owner(itemDto.getOwner() != null ?
+                        UserMapper.toEntity(itemDto.getOwner()) : null)
+                .request(itemDto.getRequest() != null ?
+                        ItemRequestMapper.toEntity(itemDto.getRequest()) : null)
                 .build();
     }
 
@@ -23,12 +32,51 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                .ownerId(item.getOwnerId())
-                .requestId(item.getRequestId())
+                .owner(item.getOwner() != null ?
+                        UserMapper.toDto(item.getOwner()) : null)
+                .request(item.getRequest() != null ?
+                        ItemRequestMapper.toDto(item.getRequest()) : null)
+                .comments(new ArrayList<>()) // или заполнить из сущности, если нужно
                 .build();
     }
 
+
     public static List<ItemDto> toDto(List<Item> items) {
         return items.stream().map(ItemMapper::toDto).toList();
+    }
+
+    public static Item toEntityWithOwner(ItemDto itemDto, User owner) {
+        return Item.builder()
+                .id(itemDto.getId())
+                .name(itemDto.getName())
+                .description(itemDto.getDescription())
+                .available(itemDto.getAvailable())
+                .owner(owner)
+                .request(itemDto.getRequest() != null ?
+                        ItemRequestMapper.toEntity(itemDto.getRequest()) : null)
+                .build();
+    }
+
+    public static Item toEntityWithRequest(ItemDto itemDto, ItemRequest request) {
+        return Item.builder()
+                .id(itemDto.getId())
+                .name(itemDto.getName())
+                .description(itemDto.getDescription())
+                .available(itemDto.getAvailable())
+                .owner(UserMapper.toEntity(itemDto.getOwner()))
+                .request(request)
+                .build();
+    }
+
+    public static void updateItemFromDto(ItemDto itemDto, Item item) {
+        if (itemDto.getName() != null) {
+            item.setName(itemDto.getName());
+        }
+        if (itemDto.getDescription() != null) {
+            item.setDescription(itemDto.getDescription());
+        }
+        if (itemDto.getAvailable() != null) {
+            item.setAvailable(itemDto.getAvailable());
+        }
     }
 }

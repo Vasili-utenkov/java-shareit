@@ -3,27 +3,24 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.storage.ItemIMStorage;
-import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.user.service.UserServiceImpl;
 
 import java.util.List;
+import java.util.Locale;
 
-@Service("itemIMService")
-@ConditionalOnProperty(name = "share.storage.type", havingValue = "memory")
+@Service
 @RequiredArgsConstructor
 @Slf4j
-public class ItemIMService implements ItemService {
+public class ItemServiceImpl implements ItemService {
 
-    private final ItemIMStorage itemStorage;
-    private final UserService userService;
-
-
+    private final ItemRepository itemRepository;
+    private final UserServiceImpl userService;
 
     /**
      * Создание предмета
@@ -35,13 +32,10 @@ public class ItemIMService implements ItemService {
     @Override
     public ItemDto createItem(Long ownerId, ItemDto itemDto) {
         log.warn("createItem(Long {}, ItemDto {})", ownerId, itemDto);
-
         Item item = ItemMapper.toEntity(itemDto);
         // Проверка
-        item.setOwnerId(ownerId);
-        userService.validateUserId(item.getOwnerId());
-
-        return ItemMapper.toDto(itemStorage.create(item));
+        item.setOwner(userService.validateUserId(ownerId));
+        return ItemMapper.toDto(itemRepository.save(item));
     }
 
     /**
@@ -53,22 +47,20 @@ public class ItemIMService implements ItemService {
     @Override
     public ItemDto getItemByItemID(Long itemId) {
         log.warn("getItemByItemID(Long {})", itemId);
-        validateItemId(itemId);
-        return ItemMapper.toDto(itemStorage.get(itemId));
+        return ItemMapper.toDto(validateItemExists(itemId));
     }
 
     /**
      * Удаление предмета по коду предмета
      *
-     * @param itemId код предмета
+     * @param itemId  код предмета
      * @param ownerId код владельца предмета
      */
     @Override
     public void deleteItem(Long itemId, Long ownerId) {
         log.warn("deleteItem(Long {}, Long {})", itemId, ownerId);
         checkEqualOwners(itemId, ownerId);
-        validateItemId(itemId);
-        itemStorage.delete(itemId);
+        itemRepository.delete(validateItemExists(itemId));
     }
 
     /**
@@ -82,12 +74,12 @@ public class ItemIMService implements ItemService {
     @Override
     public ItemDto updateItemByItemID(Long ownerId, Long itemId, ItemDto itemDto) {
         log.warn("updateItemByItemID(Long {}, Long {}, ItemDto {})", ownerId, itemId, itemDto);
-        validateItemId(itemId);
+        Item exitingItem = validateItemExists(itemId);
         checkEqualOwners(itemId, ownerId);
-        Item item = ItemMapper.toEntity(itemDto);
-        item.setOwnerId(ownerId);
-        item.setId(itemId);
-        return ItemMapper.toDto(itemStorage.update(itemId, item));
+        exitingItem.setOwner(userService.validateUserId(ownerId));
+        exitingItem.setId(itemId);
+        ItemMapper.updateItemFromDto(itemDto, exitingItem);
+        return ItemMapper.toDto(exitingItem);
     }
 
     /**
@@ -100,7 +92,8 @@ public class ItemIMService implements ItemService {
     public List<ItemDto> getItemsListByOwner(Long ownerId) {
         log.warn("getItemsListByOwner(Long {})", ownerId);
         userService.validateUserId(ownerId);
-        return ItemMapper.toDto(itemStorage.getItemsListByOwner(ownerId));
+        List<ItemDto> list = ItemMapper.toDto(itemRepository.findAllByOwnerId(ownerId));
+        return list;
     }
 
     /**
@@ -115,17 +108,17 @@ public class ItemIMService implements ItemService {
         if (text == null || text.isBlank()) {
             return List.of();
         }
-        List<ItemDto> list = ItemMapper.toDto(itemStorage.searchAvailableByText(text));
+        List<ItemDto> list = ItemMapper.toDto(itemRepository.findAvailableByText(text.toLowerCase(Locale.ROOT)));
         return list;
     }
 
     /**
-     * @param itemId код предмета
+     * @param itemId  код предмета
      * @param ownerId код владельца предмета
      * @throws NotFoundException "Неверный код владельца предмета " + ownerId"
      */
     private void checkEqualOwners(Long itemId, Long ownerId) {
-        if (!ownerId.equals(getItemByItemID(itemId).getOwnerId())) {
+        if (!ownerId.equals(getItemByItemID(itemId).getOwner().getId())) {
             throw new NotFoundException("Неверный код владельца предмета " + ownerId);
         }
     }
@@ -135,19 +128,17 @@ public class ItemIMService implements ItemService {
      *
      * @param itemId код предмета
      * @throws IllegalArgumentException "ID предмета не может быть null"
-     * @throws NotFoundException "Предмет с ID " + itemId + " не найден"
+     * @throws NotFoundException        "Предмет с ID " + itemId + " не найден"
      */
-    private void validateItemId(Long itemId) {
+    @Override
+    public Item validateItemExists(Long itemId) {
         // Проверка на null ID
         if (itemId == null) {
             throw new IllegalArgumentException("ID предмета не может быть null");
         }
 
-        // Проверка существования пользователя
-        if (itemStorage.get(itemId) == null) {
-            throw new NotFoundException("Предмет с ID " + itemId + " не найден");
-        }
+        // Проверка существования предмета
+        return itemRepository.findById(itemId)
+                .orElseThrow(() -> new NotFoundException("Предмет с ID " + itemId + " не найден"));
     }
-
-
 }

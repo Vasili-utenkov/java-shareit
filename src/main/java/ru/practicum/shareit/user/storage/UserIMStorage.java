@@ -26,7 +26,7 @@ public class UserIMStorage implements UserStorage {
     }
 
     /**
-     * @param userId код пользователя
+     * @param userId ID пользователя
      * @param user   новые данные о пользователе
      * @return User
      */
@@ -39,7 +39,7 @@ public class UserIMStorage implements UserStorage {
     }
 
     /**
-     * @param userId код пользователя
+     * @param userId ID пользователя
      */
     @Override
     public void delete(Long userId) {
@@ -47,7 +47,7 @@ public class UserIMStorage implements UserStorage {
     }
 
     /**
-     * @param userId код пользователя
+     * @param userId ID пользователя
      * @return User
      */
     @Override

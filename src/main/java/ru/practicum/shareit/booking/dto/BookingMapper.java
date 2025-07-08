@@ -1,13 +1,25 @@
 package ru.practicum.shareit.booking.dto;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.user.dto.UserMapper;
 
-public class BookingMapper {
-    private final UserMapper userMapper;
+import java.time.LocalDateTime;
 
-    public BookingMapper(UserMapper userMapper) {
-        this.userMapper = userMapper;
+@Component
+@RequiredArgsConstructor
+public class BookingMapper {
+
+    public static Booking toEntity(BookingDto bookingDto) {
+        return Booking.builder()
+                .id(bookingDto.getId())
+                .start(bookingDto.getStart())
+                .end(bookingDto.getEnd())
+                .status(bookingDto.getStatus())
+                .created(LocalDateTime.now()) // Устанавливаем текущее время при создании
+                .build();
     }
 
     public static BookingDto toDto(Booking booking) {
@@ -16,18 +28,25 @@ public class BookingMapper {
                 .start(booking.getStart())
                 .end(booking.getEnd())
                 .status(booking.getStatus())
-                .itemId(booking.getItemId())
-                .bookerId(booking.getBookerId())
+                .booker(UserMapper.toDto(booking.getBooker()))
+                .item(ItemMapper.toDto(booking.getItem()))
                 .build();
     }
 
-    public static Booking toEntity(BookingDto bookingDto) {
+    public static Booking toEntity(BookingShortDto bookingDto) {
         return Booking.builder()
                 .start(bookingDto.getStart())
                 .end(bookingDto.getEnd())
-                .status(bookingDto.getStatus())
-                .itemId(bookingDto.getItemId())
-                .bookerId(bookingDto.getBookerId())
+                .created(LocalDateTime.now()) // Устанавливаем текущее время при создании
                 .build();
+    }
+
+    public static void updateEntityFromDto(BookingDto bookingDto, Booking booking) {
+        if (bookingDto.getStart() != null) {
+            booking.setStart(bookingDto.getStart());
+        }
+        if (bookingDto.getEnd() != null) {
+            booking.setEnd(bookingDto.getEnd());
+        }
     }
 }

@@ -1,6 +1,10 @@
 package ru.practicum.shareit.request.dto;
 
 import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.user.dto.UserMapper;
+import ru.practicum.shareit.user.model.User;
+
+import java.time.LocalDateTime;
 
 public class ItemRequestMapper {
 
@@ -8,16 +12,26 @@ public class ItemRequestMapper {
         return ItemRequestDto.builder()
                 .id(request.getId())
                 .description(request.getDescription())
-                .requesterId(request.getRequesterId())
+                .requester(UserMapper.toDto(request.getUser()))
                 .created(request.getCreated())
                 .build();
     }
 
-    public static ItemRequest toEntity(ItemRequestDto requestDto) {
+    public static ItemRequest toEntity(ItemRequestDto dto) {
         return ItemRequest.builder()
-                .description(requestDto.getDescription())
-                .requesterId(requestDto.getRequesterId())
-                .created(requestDto.getCreated())
+                .id(dto.getId())
+                .description(dto.getDescription())
+                .created(dto.getCreated() != null ? dto.getCreated() : LocalDateTime.now())
+                // user устанавливается отдельно!
+                .build();
+    }
+
+    public static ItemRequest toEntityWithUser(ItemRequestDto dto, User user) {
+        return ItemRequest.builder()
+                .id(dto.getId())
+                .description(dto.getDescription())
+                .user(user)
+                .created(dto.getCreated() != null ? dto.getCreated() : LocalDateTime.now())
                 .build();
     }
 }
