@@ -14,7 +14,7 @@ public interface BookingService {
      * @param bookerId идентификатор пользователя, создающего бронирование
      * @return BookingDto созданное бронирование со статусом WAITING
      */
-    BookingDto createBooking(BookingDto bookingDto, Long bookerId);
+    BookingDto createBooking(Long bookerId, BookingDto bookingDto);
 
     /**
      * Подтверждение или отклонение бронирования владельцем вещи

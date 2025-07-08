@@ -40,8 +40,8 @@ public class BookingServiceImpl implements BookingService {
      */
     @Override
 //    public BookingDto createBooking(BookingShortDto bookingDto, Long bookerId) {
-    public BookingDto createBooking(BookingDto bookingDto, Long bookerId) {
-        log.warn("createBooking(BookingDto {}, Long {})", bookingDto, bookerId);
+    public BookingDto createBooking(Long bookerId, BookingDto bookingDto) {
+        log.warn("createBooking(Long {}, BookingDto {})", bookerId, bookingDto);
         User booker = userService.validateUserId(bookerId);
         ItemDto itemDto = bookingDto.getItem();
         if (itemDto != null) {

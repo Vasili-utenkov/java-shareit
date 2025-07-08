@@ -26,7 +26,7 @@ public class BookingController {
         log.warn("Добавление бронирования. @PostMapping (/bookings) ");
         log.warn("createBooking( @RequestHeader(X-Sharer-User-Id) Long {}, @Valid @RequestBody BookingShortDto {} )",
                 bookerId, bookingDto);
-        BookingDto dto = bookingService.createBooking(bookingDto, bookerId);
+        BookingDto dto = bookingService.createBooking(bookerId, bookingDto);
         log.warn("ИТОГ: Создали бронь " + dto);
         return dto;
     }
