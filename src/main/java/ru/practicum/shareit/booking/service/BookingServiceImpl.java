@@ -28,7 +28,6 @@ public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
     private final UserService userService;
-//    private final ItemStorage itemStorage;
     private final ItemService itemService;
 
     /**
@@ -56,7 +55,6 @@ public class BookingServiceImpl implements BookingService {
             throw new IllegalArgumentException("Владелец не может бронировать свою вещь.");
         }
         Booking booking = bookingRepository.save(BookingMapper.toEntity(bookingDto, booker, item));
-//        bookingRepository.save(booking);
         return BookingMapper.toDto(bookingRepository.save(booking));
     }
 

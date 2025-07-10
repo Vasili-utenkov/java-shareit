@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import ru.practicum.shareit.enums.BookingStatus;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.validators.StartBeforeEnd;
 
 import java.time.LocalDateTime;
 
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@StartBeforeEnd(startField = "start", endField = "end")
 public class BookingDto {
     private Long id;
     private ItemDto item;
