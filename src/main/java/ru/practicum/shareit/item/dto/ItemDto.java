@@ -25,7 +25,6 @@ public class ItemDto {
     private String description;
     @NotNull(message = "Статус доступности аренды не может быть null")
     private Boolean available; // Доступна для аренды?
-//    @NotNull(message = "Владелец не может быть null")
     private UserDto owner; // владелец (User)
     private ItemRequestDto request; // запрос (ItemRequest), если вещь создана в ответ на него
     private List<CommentDto> comments;

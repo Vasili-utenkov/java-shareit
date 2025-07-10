@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.comment.dto.CommentCreateDto;
+import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
@@ -65,6 +67,7 @@ public class ItemController {
         log.warn("getItemByItemID(@PathVariable Long {})",
                 itemId);
         ItemDto dto = itemService.getItemByItemID(itemId);
+        log.warn("ИТОГ: Просмотр информации о конкретной вещи " + dto);
         return dto;
     }
 
@@ -88,6 +91,23 @@ public class ItemController {
                 text);
         List<ItemDto> list = itemService.getItemsListByText(text);
         return list;
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto createComment(
+            @Valid @RequestBody CommentCreateDto commentCreateDto,
+            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @PathVariable Long itemId
+    ) {
+        log.warn("Добавить коментарий по вещи. @PostMapping(/items/{itemId}/comment) ");
+        log.warn("createComment(" +
+                "@Valid @RequestBody CommentCreateDto {}," +
+                "@RequestHeader(X-Sharer-User-Id) Long {}," +
+                "@PathVariable Long {})",
+                commentCreateDto, userId, itemId);
+        CommentDto dto = itemService.addCommentToItem(commentCreateDto, userId, itemId);
+        log.warn("ИТОГ: Создали комментарий: " + dto);
+        return dto;
     }
 
 }

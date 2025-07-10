@@ -8,21 +8,11 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 
-import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
 public class BookingMapper {
 
-    public static Booking toEntity(BookingDto bookingDto) {
-        return Booking.builder()
-                .id(bookingDto.getId())
-                .start(bookingDto.getStart())
-                .end(bookingDto.getEnd())
-                .status(bookingDto.getStatus())
-                .created(LocalDateTime.now()) // Устанавливаем текущее время при создании
-                .build();
-    }
 
     public static BookingDto toDto(Booking booking) {
         return BookingDto.builder()
@@ -35,13 +25,6 @@ public class BookingMapper {
                 .build();
     }
 
-    public static Booking toEntity(BookingShortDto bookingDto) {
-        return Booking.builder()
-                .start(bookingDto.getStart())
-                .end(bookingDto.getEnd())
-                .created(LocalDateTime.now()) // Устанавливаем текущее время при создании
-                .build();
-    }
 
     public static Booking toEntity(BookingShortDto dto, User booker, Item item) {
         Booking booking = new Booking();
@@ -52,12 +35,4 @@ public class BookingMapper {
         return booking;
     }
 
-    public static void updateEntityFromDto(BookingDto bookingDto, Booking booking) {
-        if (bookingDto.getStart() != null) {
-            booking.setStart(bookingDto.getStart());
-        }
-        if (bookingDto.getEnd() != null) {
-            booking.setEnd(bookingDto.getEnd());
-        }
-    }
 }

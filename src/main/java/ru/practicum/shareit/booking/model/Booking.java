@@ -39,7 +39,7 @@ public class Booking {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private BookingStatus status; // ALL, CURRENT, PAST, FUTURE, WAITING, REJECTED
+    private BookingStatus status;    // WAITING, // ОЖИДАНИЕ    APPROVED, // ОДОБРЕНО    REJECTED, // ОТКЛОНЕНО    CANCELED, // ОТМЕНЕНО    ENDED // ЗАВЕРШЕНО
 
     @Column(nullable = false)
     private LocalDateTime created;
@@ -49,7 +49,5 @@ public class Booking {
         created = LocalDateTime.now();
         status = BookingStatus.WAITING;
     }
-
-
 
 }

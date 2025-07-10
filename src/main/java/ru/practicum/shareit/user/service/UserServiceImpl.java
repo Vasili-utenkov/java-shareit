@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserByID(Long userId) {
         log.warn("getUserByID(Long {})", userId);
-        return UserMapper.toDto(validateUserId(userId));
+        return UserMapper.toDto(validateUserExists(userId));
     }
 
     /**
@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUserByID(Long userId) {
         log.warn("deleteUserByID(Long {})", userId);
-        User user = validateUserId(userId);
+        User user = validateUserExists(userId);
         userRepository.delete(user);
     }
 
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUserByID(Long userId, UserDto userDto) {
         log.warn("updateUserByID(Long {}, UserDto {})", userId, userDto);
-        User existingUser = validateUserId(userId);
+        User existingUser = validateUserExists(userId);
         validateEmail(userDto.getEmail());
         // Обновление полей
         if (userDto.getEmail() != null && !userDto.getEmail().equals(existingUser.getEmail())) {
@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
      * @throws NotFoundException "Пользователь с ID " + userId + " не найден"
      */
     @Override
-    public User validateUserId(Long userId) {
+    public User validateUserExists(Long userId) {
         log.warn("validateUserId(Long {})", userId);
         // Проверка на null ID
         if (userId == null) {

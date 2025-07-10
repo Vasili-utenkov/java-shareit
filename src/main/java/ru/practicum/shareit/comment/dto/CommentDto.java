@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.user.dto.UserDto;
 
 import java.time.LocalDateTime;
 
@@ -20,7 +19,7 @@ public class CommentDto {
     @NotBlank(message = "Текст не может быть пустым")
     private String text;
     private ItemDto item;
-    private UserDto author;
+    private String authorName;
     @FutureOrPresent(message = "Дата нового комментария не может быть в прошлом")
     private LocalDateTime created;
 }

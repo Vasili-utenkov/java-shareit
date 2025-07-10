@@ -17,6 +17,7 @@ import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +43,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingDto createBooking(Long bookerId, BookingShortDto bookingDto) {
         log.warn("createBooking(Long {}, BookingDto {})", bookerId, bookingDto);
-        User booker = userService.validateUserId(bookerId);
+        User booker = userService.validateUserExists(bookerId);
         Item item = itemService.validateItemExists(bookingDto.getItemId());
 
         // Вещь в доступе к заказу
@@ -71,10 +72,8 @@ public class BookingServiceImpl implements BookingService {
      * @throws IllegalArgumentException Статус можно изменить только из состояния WAITING.
      */
     @Override
-    public BookingDto updateBookingStatus(Long ownerId, Long bookingId, Boolean approved) {
+    public BookingDto approveBooking(Long ownerId, Long bookingId, Boolean approved) {
         log.warn("updateBookingStatus(Long ownerId, Long bookingId, Boolean approved)");
-        userService.validateUserId(ownerId);
-
         // Проверяем, что параметр approved не null
         if (approved == null) {
             throw new IllegalArgumentException("Параметр approved не может быть null.");
@@ -115,7 +114,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingDto getBookingById(Long userId, Long bookingId) {
         log.warn("getBookingById(Long {}, Long {})", userId, bookingId);
-        userService.validateUserId(userId);
+        userService.validateUserExists(userId);
         Booking existingBooking = validateBookingExists(bookingId);
         return BookingMapper.toDto(existingBooking);
     }
@@ -130,7 +129,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDto> getUserBookings(Long userId, BookingState state) {
         log.warn("getUserBookings(Long {}, BookingStatus {})", userId, state);
-        userService.validateUserId(userId);
+        userService.validateUserExists(userId);
         List<Booking> bookings = bookingRepository.findUserBookingsByState(userId, state.toString());
 
         return bookings.stream()
@@ -149,7 +148,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDto> getOwnerBookings(Long ownerId, BookingState state) {
         log.warn("getOwnerBookings(Long {}, BookingStatus {})", ownerId, state);
-        userService.validateUserId(ownerId);
+        userService.validateUserExists(ownerId);
         List<Booking> bookings = bookingRepository.findOwnerBookingsByState(ownerId, state.toString());
 
         return bookings.stream()
@@ -174,4 +173,25 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new NotFoundException("Заказ с ID " + bookingId + " не найден"));
     }
 
+
+    /**
+     * Прользователь пользовался в аренде вещью на момент bookerEndTime
+     *
+     * @param userId        ID пользователя
+     * @param itemId        ID предмета
+     * @param bookerEndTime дата запроса аренды вещи
+     * @throws NotAvailableForOrderException Пользователь не брал этот предмет в аренду или аренда еще не завершена
+     */
+    @Override
+    public void validateUserBookedItem(Long userId, Long itemId, LocalDateTime bookerEndTime) {
+
+        List<Booking> userBookings = bookingRepository.findCompletedBookingsByUserAndItem(
+                userId,
+                itemId,
+                bookerEndTime
+        );
+        if (userBookings.isEmpty()) {
+            throw new NotAvailableForOrderException("Пользователь не брал этот предмет в аренду или аренда еще не завершена");
+        }
+    }
 }

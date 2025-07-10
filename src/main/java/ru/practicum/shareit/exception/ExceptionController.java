@@ -15,43 +15,36 @@ public class ExceptionController {
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(DataConflictException.class)
     public Map<String, String> handleEmailExists(DataConflictException e) {
-        log.warn("ПРОВЕРКА: ExceptionController: handleEmailExists: " + e.getMessage());
         return Map.of("error", e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND) // 404
     @ExceptionHandler(NotFoundException.class)
     public Map<String, String> handleNotFound(NotFoundException e) {
-        log.warn("ПРОВЕРКА: ExceptionController: handleNotFound: " + e.getMessage());
         return Map.of("error", e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(IllegalArgumentException.class)
     public Map<String, String> handleIllegalArgument(IllegalArgumentException e) {
-        log.warn("ПРОВЕРКА: ExceptionController: handleIllegalArgument: " + e.getMessage());
         return Map.of("error", e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(ItemNotAvailableException.class)
     public Map<String, String> itemNotAvailableException(ItemNotAvailableException e) {
-        log.warn("ПРОВЕРКА: ExceptionController: ItemNotAvailableException: " + e.getMessage());
         return Map.of("error", e.getMessage());
     }
 
-//    @ResponseStatus(HttpStatus.FORBIDDEN) // 403
     @ResponseStatus(HttpStatus.NOT_FOUND) // 404
     @ExceptionHandler(UserNotExistsException.class)
     public Map<String, String> userNotExistsException(UserNotExistsException e) {
-        log.warn("ПРОВЕРКА: ExceptionController: UserNotExistsException: " + e.getMessage());
         return Map.of("error", e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST) // 400
     @ExceptionHandler(NotAvailableForOrderException.class)
     public Map<String, String> notAvailableForOrderException(NotAvailableForOrderException e) {
-        log.warn("ПРОВЕРКА: ExceptionController: NotAvailableForOrderException: " + e.getMessage());
         return Map.of("error", e.getMessage());
     }
 

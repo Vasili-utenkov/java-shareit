@@ -1,5 +1,7 @@
 package ru.practicum.shareit.item.service;
 
+import ru.practicum.shareit.comment.dto.CommentCreateDto;
+import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
@@ -68,5 +70,16 @@ public interface ItemService {
      * @return Item
      */
     Item validateItemExists(Long itemId);
+
+
+    /**
+     * Добавить комментарий в предмет
+     *
+     * @param commentCreateDto Комментарий
+     * @param userId           ID пользователя
+     * @param itemId           ID предмета
+     * @return CommentDto
+     */
+    CommentDto addCommentToItem(CommentCreateDto commentCreateDto, Long userId, Long itemId);
 
 }

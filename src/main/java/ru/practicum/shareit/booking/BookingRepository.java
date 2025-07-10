@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.practicum.shareit.booking.model.Booking;
-
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
@@ -35,6 +35,18 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "ORDER BY b.start DESC")
     List<Booking> findOwnerBookingsByState(@Param("ownerId") Long ownerId,
                                            @Param("state") String state);
+
+
+    @Query("SELECT b FROM Booking b " +
+            "WHERE b.booker.id = :bookerId " +
+            "AND b.item.id = :itemId " +
+            "AND b.end < :currentTime " +
+            "AND b.status IN (ru.practicum.shareit.enums.BookingStatus.APPROVED, ru.practicum.shareit.enums.BookingStatus.ENDED) " +
+            "ORDER BY b.end DESC")
+    List<Booking> findCompletedBookingsByUserAndItem(
+            @Param("bookerId") Long bookerId,
+            @Param("itemId") Long itemId,
+            @Param("currentTime") LocalDateTime currentTime);
 
 
 }

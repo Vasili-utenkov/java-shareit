@@ -2,7 +2,7 @@ package ru.practicum.shareit.request.dto;
 
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.dto.UserMapper;
-import ru.practicum.shareit.user.model.User;
+
 
 import java.time.LocalDateTime;
 
@@ -26,12 +26,4 @@ public class ItemRequestMapper {
                 .build();
     }
 
-    public static ItemRequest toEntityWithUser(ItemRequestDto dto, User user) {
-        return ItemRequest.builder()
-                .id(dto.getId())
-                .description(dto.getDescription())
-                .user(user)
-                .created(dto.getCreated() != null ? dto.getCreated() : LocalDateTime.now())
-                .build();
-    }
 }

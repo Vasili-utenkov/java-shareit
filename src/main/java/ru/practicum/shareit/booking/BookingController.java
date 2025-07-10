@@ -33,18 +33,18 @@ public class BookingController {
     }
 
     @PatchMapping("/{bookingId}")
-    public BookingDto updateBookingStatus(
+    public BookingDto approveBooking(
             @RequestHeader("X-Sharer-User-Id") Long bookerId,
             @PathVariable Long bookingId,
             @RequestParam Boolean approved
     ) {
         log.warn("Подтверждение/отклонение бронирования. @PatchMapping (/bookings/{bookingId})");
-        log.warn("updateBookingStatus(" +
+        log.warn("approveBooking(" +
                 "@RequestHeader(X-Sharer-User-Id) Long {}," +
                 "@PathVariable Long {}," +
                 "@RequestParam Boolean {}" +
                 ")", bookerId, bookingId, approved);
-        BookingDto dto = bookingService.updateBookingStatus(bookerId, bookingId, approved);
+        BookingDto dto = bookingService.approveBooking(bookerId, bookingId, approved);
         return dto;
     }
 

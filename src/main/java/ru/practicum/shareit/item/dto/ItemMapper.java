@@ -3,10 +3,7 @@ package ru.practicum.shareit.item.dto;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.dto.ItemRequestMapper;
-import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.dto.UserMapper;
-import ru.practicum.shareit.user.model.User;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,28 +42,6 @@ public class ItemMapper {
         return items.stream().map(ItemMapper::toDto).toList();
     }
 
-    public static Item toEntityWithOwner(ItemDto itemDto, User owner) {
-        return Item.builder()
-                .id(itemDto.getId())
-                .name(itemDto.getName())
-                .description(itemDto.getDescription())
-                .available(itemDto.getAvailable())
-                .owner(owner)
-                .request(itemDto.getRequest() != null ?
-                        ItemRequestMapper.toEntity(itemDto.getRequest()) : null)
-                .build();
-    }
-
-    public static Item toEntityWithRequest(ItemDto itemDto, ItemRequest request) {
-        return Item.builder()
-                .id(itemDto.getId())
-                .name(itemDto.getName())
-                .description(itemDto.getDescription())
-                .available(itemDto.getAvailable())
-                .owner(UserMapper.toEntity(itemDto.getOwner()))
-                .request(request)
-                .build();
-    }
 
     public static void updateItemFromDto(ItemDto itemDto, Item item) {
         if (itemDto.getName() != null) {

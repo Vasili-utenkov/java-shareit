@@ -43,7 +43,7 @@ public interface UserService {
      *
      * @param userId ID пользователя
      */
-    User validateUserId(Long userId);
+    User validateUserExists(Long userId);
 
     /**
      * Проверка существования email

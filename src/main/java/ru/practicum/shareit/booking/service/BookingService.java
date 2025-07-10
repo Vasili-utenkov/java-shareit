@@ -4,6 +4,7 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingShortDto;
 import ru.practicum.shareit.enums.BookingState;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BookingService {
@@ -25,7 +26,7 @@ public interface BookingService {
      * @param approved true - подтверждение (APPROVED), false - отклонение (REJECTED)
      * @return BookingDto обновлённое бронирование
      */
-    BookingDto updateBookingStatus(Long ownerId, Long bookingId, Boolean approved);
+    BookingDto approveBooking(Long ownerId, Long bookingId, Boolean approved);
 
     /**
      * Получение информации о бронировании по ID
@@ -53,4 +54,16 @@ public interface BookingService {
      * @return List<BookingDto> список бронирований, отсортированный по дате начала (новые → старые)
      */
     List<BookingDto> getOwnerBookings(Long ownerId, BookingState state);
+
+
+    /**
+     * Прользователь пользовался в аренде вещью на момент bookerEndTime
+     *
+     * @param userId ID пользователя
+     * @param itemId ID предмета
+     * @param bookerEndTime дата запроса аренды вещи
+     */
+    void validateUserBookedItem(Long userId, Long itemId, LocalDateTime bookerEndTime);
+
+
 }
