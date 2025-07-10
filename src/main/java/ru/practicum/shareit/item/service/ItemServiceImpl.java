@@ -110,14 +110,20 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> getItemsListByOwner(Long ownerId) {
         log.warn("getItemsListByOwner(Long {})", ownerId);
         userService.validateUserExists(ownerId);
-        List<Item> list = itemRepository.findAllByOwnerId(ownerId);
+        List<Item> ownerItemList = itemRepository.findAllByOwnerId(ownerId);
 
-        List<Long> itemIds = list.stream()
+        List<Long> ownerItemListId = ownerItemList.stream()
                 .map(Item::getId)
                 .collect(Collectors.toList());
 
-        // Просмотр дат последнего и ближайшего следующего бронирования для каждой вещи, когда просматривает список
-        List<Booking> bookings = bookingRepository.findAllByItemIdIn(itemIds);
+        // Получаем комментарии для каждой вещи
+        List<Comment> commentsAllList = commentRepository.findAllByListItemId(ownerItemListId);
+        Map<Long, List<Comment>> commentsByItem = commentsAllList.stream()
+                .collect(Collectors.groupingBy(comment -> comment.getItem().getId()));
+
+
+        // Получаем бронирования для каждой вещи
+        List<Booking> bookings = bookingRepository.findAllByItemIdIn(ownerItemListId);
         Map<Long, BookingDto> lastBookings = new HashMap<>();
         Map<Long, BookingDto> nextBookings = new HashMap<>();
 
@@ -133,9 +139,14 @@ public class ItemServiceImpl implements ItemService {
             }
         }
 
-        return list.stream().map(
+        return ownerItemList.stream().map(
                 item -> {
                     ItemDto itemDto = ItemMapper.toDto(item);
+
+                    itemDto.setComments(commentsByItem.getOrDefault(itemDto.getId(), List.of()).stream()
+                            .map(CommentMapper::toDto)
+                            .toList());
+
                     itemDto.setLastBooking(lastBookings.get(itemDto.getId()));
                     itemDto.setNextBooking(nextBookings.get(itemDto.getId()));
                     return itemDto;
