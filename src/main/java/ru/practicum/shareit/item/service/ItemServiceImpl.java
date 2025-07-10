@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.comment.CommentRepository;
 import ru.practicum.shareit.comment.dto.CommentCreateDto;
@@ -21,9 +23,8 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserServiceImpl;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +35,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserServiceImpl userService;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+
 
     /**
      * Создание предмета
@@ -62,7 +64,7 @@ public class ItemServiceImpl implements ItemService {
         log.warn("getItemByItemID(Long {})", itemId);
         ItemDto dto = ItemMapper.toDto(validateItemExists(itemId));
         // Добавить комменты
-        dto.setComments(CommentMapper.toDto(commentRepository.findAllByItemId(itemId)));
+        dto.setComments(CommentMapper.toDtoList(commentRepository.findAllByItemId(itemId)));
         return dto;
     }
 
@@ -108,8 +110,37 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> getItemsListByOwner(Long ownerId) {
         log.warn("getItemsListByOwner(Long {})", ownerId);
         userService.validateUserExists(ownerId);
-        List<ItemDto> list = ItemMapper.toDto(itemRepository.findAllByOwnerId(ownerId));
-        return list;
+        List<Item> list = itemRepository.findAllByOwnerId(ownerId);
+
+        List<Long> itemIds = list.stream()
+                .map(Item::getId)
+                .collect(Collectors.toList());
+
+        // Просмотр дат последнего и ближайшего следующего бронирования для каждой вещи, когда просматривает список
+        List<Booking> bookings = bookingRepository.findAllByItemIdIn(itemIds);
+        Map<Long, BookingDto> lastBookings = new HashMap<>();
+        Map<Long, BookingDto> nextBookings = new HashMap<>();
+
+        for (Booking booking : bookings) {
+            BookingDto bookingDto = BookingMapper.toDto(booking);
+            Long itemId = booking.getItem().getId();
+
+            // Определяем, является ли это последним или следующим бронированием
+            if (booking.getStart().isBefore(LocalDateTime.now())) {
+                lastBookings.put(itemId, bookingDto);
+            } else {
+                nextBookings.put(itemId, bookingDto);
+            }
+        }
+
+        return list.stream().map(
+                item -> {
+                    ItemDto itemDto = ItemMapper.toDto(item);
+                    itemDto.setLastBooking(lastBookings.get(itemDto.getId()));
+                    itemDto.setNextBooking(nextBookings.get(itemDto.getId()));
+                    return itemDto;
+                }
+        ).toList();
     }
 
     /**

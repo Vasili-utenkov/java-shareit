@@ -1,6 +1,5 @@
 package ru.practicum.shareit.validators;
 
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -11,11 +10,13 @@ public class StartBeforeEndValidator implements ConstraintValidator<StartBeforeE
 
     private String startFieldName;
     private String endFieldName;
+    private String message;
 
     @Override
     public void initialize(StartBeforeEnd constraintAnnotation) {
         this.startFieldName = constraintAnnotation.startField();
         this.endFieldName = constraintAnnotation.endField();
+        this.message = constraintAnnotation.message();
     }
 
     @Override
@@ -34,7 +35,18 @@ public class StartBeforeEndValidator implements ConstraintValidator<StartBeforeE
                 return true;
             }
 
-            return end.isAfter(start);
+            if (!end.isAfter(start)) {
+                context.disableDefaultConstraintViolation();
+                context.buildConstraintViolationWithTemplate(message)
+                        .addPropertyNode(startFieldName)
+                        .addConstraintViolation();
+                context.buildConstraintViolationWithTemplate(message)
+                        .addPropertyNode(endFieldName)
+                        .addConstraintViolation();
+
+                return false;
+            }
+            return true;
         } catch (Exception e) {
             return false;
         }

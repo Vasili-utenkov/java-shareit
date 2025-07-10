@@ -49,4 +49,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             @Param("currentTime") LocalDateTime currentTime);
 
 
+    @Query("SELECT b FROM Booking b " +
+            "JOIN FETCH b.item i " +
+            "JOIN FETCH b.booker " +
+            "WHERE i.id IN :itemIds")
+    List<Booking> findAllByItemIdIn(
+            @Param("itemIds") List<Long> itemIds);
+
 }

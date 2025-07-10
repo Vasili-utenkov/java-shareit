@@ -48,4 +48,10 @@ public class ExceptionController {
         return Map.of("error", e.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(AccessDeniedException.class)
+    public Map<String, String> accessDeniedException(AccessDeniedException e) {
+        return Map.of("error", e.getMessage());
+    }
+
 }

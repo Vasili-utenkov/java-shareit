@@ -9,10 +9,10 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = StartBeforeEndValidator.class)
 public @interface StartBeforeEnd {
-    String message() default "End date must be after start date";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 
     String startField() default "start";  // имя поля с датой начала
     String endField() default "end";      // имя поля с датой окончания
+    String message() default "{validators.StartBeforeEnd.message}";
 }

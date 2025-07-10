@@ -10,6 +10,7 @@ import ru.practicum.shareit.booking.dto.BookingShortDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.enums.BookingState;
 import ru.practicum.shareit.enums.BookingStatus;
+import ru.practicum.shareit.exception.AccessDeniedException;
 import ru.practicum.shareit.exception.NotAvailableForOrderException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
@@ -37,7 +38,7 @@ public class BookingServiceImpl implements BookingService {
      * @param bookerId   идентификатор пользователя, создающего бронирование
      * @return BookingDto созданное бронирование со статусом WAITING
      * @throws NotAvailableForOrderException Предмет недоступен к заказу.
-     * @throws IllegalArgumentException Владелец не может бронировать свою вещь.
+     * @throws IllegalArgumentException      Владелец не может бронировать свою вещь.
      */
     @Override
     public BookingDto createBooking(Long bookerId, BookingShortDto bookingDto) {
@@ -108,12 +109,23 @@ public class BookingServiceImpl implements BookingService {
      * @param userId    ID пользователя (автор или владелец)
      * @param bookingId ID заказа
      * @return BookingDto данные бронирования
+     * @throws AccessDeniedException Информацию о брони может смотреть только владелец вещи или автор бронирования.
      */
     @Override
     public BookingDto getBookingById(Long userId, Long bookingId) {
         log.warn("getBookingById(Long {}, Long {})", userId, bookingId);
-        userService.validateUserExists(userId);
         Booking existingBooking = validateBookingExists(bookingId);
+
+//  Может быть выполнено либо автором бронирования, либо владельцем вещи, к которой относится бронирование.
+        Item item = existingBooking.getItem();
+// арендатор
+        User booker = existingBooking.getBooker();
+// Владелец вещи
+        User owner = item.getOwner();
+
+        if (!userId.equals(booker.getId()) && !userId.equals(owner.getId())) {
+            throw new AccessDeniedException("Информацию о брони может смотреть только владелец вещи или автор бронирования.");
+        }
         return BookingMapper.toDto(existingBooking);
     }
 

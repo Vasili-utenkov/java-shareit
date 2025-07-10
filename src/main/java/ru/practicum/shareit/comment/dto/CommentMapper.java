@@ -29,7 +29,7 @@ public class CommentMapper {
                 .build();
     }
 
-    public static List<CommentDto> toDto(List<Comment> comments) {
+    public static List<CommentDto> toDtoList(List<Comment> comments) {
         return comments.stream().map(CommentMapper::toDto).toList();
     }
 
