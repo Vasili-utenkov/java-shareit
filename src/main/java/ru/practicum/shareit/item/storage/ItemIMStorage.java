@@ -51,11 +51,11 @@ public class ItemIMStorage implements ItemStorage {
         if (item.getAvailable() != null) {
             existingItem.setAvailable(item.getAvailable());
         }
-        if (item.getOwnerId() != null) {
-            existingItem.setOwnerId(item.getOwnerId());
+        if (item.getOwner() != null) {
+            existingItem.setOwner(item.getOwner());
         }
-        if (item.getRequestId() != null) {
-            existingItem.setRequestId(item.getRequestId());
+        if (item.getRequest() != null) {
+            existingItem.setRequest(item.getRequest());
         }
 
         items.put(itemId, existingItem);
@@ -92,7 +92,7 @@ public class ItemIMStorage implements ItemStorage {
     @Override
     public List<Item> getItemsListByOwner(Long ownerId) {
         return items.values().stream()
-                .filter(item -> Objects.equals(item.getOwnerId(), ownerId))
+                .filter(item -> Objects.equals(item.getOwner().getId(), ownerId))
                 .toList();
     }
 

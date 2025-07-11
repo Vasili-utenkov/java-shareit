@@ -1,16 +1,16 @@
 package ru.practicum.shareit.item;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.comment.dto.CommentCreateDto;
+import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.item.service.ItemServiceFactory;
 
 import java.util.List;
 
@@ -20,14 +20,7 @@ import java.util.List;
 @Slf4j
 public class ItemController {
 
-    private final ItemServiceFactory factory;
     private final ItemService itemService;
-
-    @Autowired
-    public ItemController(ItemServiceFactory factory) {
-        this.factory = factory;
-        this.itemService = factory.getItemService();
-    }
 
     @PostMapping
     public ItemDto createItem(
@@ -37,6 +30,7 @@ public class ItemController {
         log.warn("createItem(@RequestHeader(X-Sharer-User-Id) Long {}, @RequestBody @Valid ItemDto {})",
                 ownerId, item);
         ItemDto dto = itemService.createItem(ownerId, item);
+        log.warn("ИТОГ: Создали предмет " + dto);
         return dto;
     }
 
@@ -50,6 +44,7 @@ public class ItemController {
         log.warn("updateItemByItemID(@RequestHeader(X-Sharer-User-Id) Long {}, @PathVariable Long {}, @RequestBody ItemDto {})",
                 ownerId, itemId, item);
         ItemDto dto = itemService.updateItemByItemID(ownerId, itemId, item);
+        log.warn("ИТОГ: Изменили предмет на " + dto);
         return dto;
     }
 
@@ -72,6 +67,7 @@ public class ItemController {
         log.warn("getItemByItemID(@PathVariable Long {})",
                 itemId);
         ItemDto dto = itemService.getItemByItemID(itemId);
+        log.warn("ИТОГ: Просмотр информации о конкретной вещи " + dto);
         return dto;
     }
 
@@ -95,6 +91,23 @@ public class ItemController {
                 text);
         List<ItemDto> list = itemService.getItemsListByText(text);
         return list;
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto createComment(
+            @Valid @RequestBody CommentCreateDto commentCreateDto,
+            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @PathVariable Long itemId
+    ) {
+        log.warn("Добавить коментарий по вещи. @PostMapping(/items/{itemId}/comment) ");
+        log.warn("createComment(" +
+                "@Valid @RequestBody CommentCreateDto {}," +
+                "@RequestHeader(X-Sharer-User-Id) Long {}," +
+                "@PathVariable Long {})",
+                commentCreateDto, userId, itemId);
+        CommentDto dto = itemService.addCommentToItem(commentCreateDto, userId, itemId);
+        log.warn("ИТОГ: Создали комментарий: " + dto);
+        return dto;
     }
 
 }

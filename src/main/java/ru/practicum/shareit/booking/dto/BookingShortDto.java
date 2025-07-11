@@ -1,14 +1,12 @@
 package ru.practicum.shareit.booking.dto;
 
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.enums.BookingStatus;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.validators.StartBeforeEnd;
 
 import java.time.LocalDateTime;
@@ -18,15 +16,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @StartBeforeEnd(startField = "start", endField = "end")
-public class BookingDto {
-    private Long id;
-    private ItemDto item;
-    private UserDto booker;
+public class BookingShortDto {
+    @NotNull(message = "Должен присутствовать предмет  аренды")
+    private Long itemId;
+    @FutureOrPresent(message = "Дата начала аренды должна быть в будущем")
     @NotNull(message = "Дата начала аренды должна быть")
-    @FutureOrPresent(message = "Дата начала аренды не должна быть в прошлом")
     private LocalDateTime start;
+    @Future(message = "Дата начала аренды должна быть в будущем")
     @NotNull(message = "Дата окончания аренды должна быть")
-    @FutureOrPresent(message = "Дата окончания аренды не должна быть в прошлом")
     private LocalDateTime end;
-    private BookingStatus status;
 }

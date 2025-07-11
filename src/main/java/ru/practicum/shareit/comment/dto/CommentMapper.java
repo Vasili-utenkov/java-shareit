@@ -3,30 +3,35 @@ package ru.practicum.shareit.comment.dto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.comment.model.Comment;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class CommentMapper {
 
-    public CommentDto toDto(Comment comment) {
+    public static CommentDto toDto(Comment comment) {
 
         return CommentDto.builder()
                 .id(comment.getId())
-                .text(comment.getText())
-                .itemId(comment.getItemId())
-                .authorId(comment.getAuthorId())
-                .created(comment.getCreated())
+                .authorName(comment.getAuthor().getName()).text(comment.getText())
+                .created(comment.getCreated()).build();
+    }
+
+    public static Comment toEntity(CommentCreateDto dto, User user, Item item) {
+        return Comment.builder()
+                .author(user)
+                .text(dto.getText())
+                .item(item)
+                .created(LocalDateTime.now())
                 .build();
     }
 
-    public Comment toEntity(CommentDto commentDto) {
-        return Comment.builder()
-                .id(commentDto.getId())
-                .text(commentDto.getText())
-                .itemId(commentDto.getItemId())
-                .authorId(commentDto.getAuthorId())
-                .created(commentDto.getCreated())
-                .build();
+    public static List<CommentDto> toDtoList(List<Comment> comments) {
+        return comments.stream().map(CommentMapper::toDto).toList();
     }
+
 }
 

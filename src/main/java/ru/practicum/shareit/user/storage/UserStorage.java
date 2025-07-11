@@ -17,7 +17,7 @@ public interface UserStorage {
     /**
      * Изменение данных по пользователю
      *
-     * @param userId код пользователя
+     * @param userId ID пользователя
      * @param user новые данные о пользователе
      * @return User
      */
@@ -26,14 +26,14 @@ public interface UserStorage {
     /**
      * Удаление пользователя
      *
-     * @param userId код пользователя
+     * @param userId ID пользователя
      */
     void delete(Long userId);
 
     /**
      * получение данных по пользователю
      *
-     * @param userId код пользователя
+     * @param userId ID пользователя
      * @return User
      */
     User get(Long userId);

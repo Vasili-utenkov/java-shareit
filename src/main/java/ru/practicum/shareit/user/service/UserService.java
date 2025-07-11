@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user.service;
 
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 
 public interface UserService {
 
@@ -15,7 +16,7 @@ public interface UserService {
     /**
      * Получение пользователя по коду пользователя
      *
-     * @param userId код пользователя
+     * @param userId ID пользователя
      * @return UserDto
      */
     UserDto getUserByID(Long userId);
@@ -23,7 +24,7 @@ public interface UserService {
     /**
      * Удаление пользователя по коду пользователя
      *
-     * @param userId код пользователя
+     * @param userId ID пользователя
      */
 
     void deleteUserByID(Long userId);
@@ -31,19 +32,18 @@ public interface UserService {
     /**
      * Изменение пользователя по коду пользователя
      *
-     * @param userId код пользователя
+     * @param userId ID пользователя
      * @param userDto новые данные пользователя
      * @return UserDto
      */
     UserDto updateUserByID(Long userId, UserDto userDto);
 
-
     /**
      * Проверка переданого в поиск кода пользователя
      *
-     * @param userId код пользователя
+     * @param userId ID пользователя
      */
-    void validateUserId(Long userId);
+    User validateUserExists(Long userId);
 
     /**
      * Проверка существования email
