@@ -53,7 +53,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "JOIN FETCH b.item i " +
             "JOIN FETCH b.booker " +
             "WHERE i.id IN :itemIds")
-    List<Booking> findAllByItemIdIn(
+    List<Booking> findAllByItemId(
             @Param("itemIds") List<Long> itemIds);
 
 }

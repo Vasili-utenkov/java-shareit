@@ -123,7 +123,7 @@ public class ItemServiceImpl implements ItemService {
 
 
         // Получаем бронирования для каждой вещи
-        List<Booking> bookings = bookingRepository.findAllByItemIdIn(ownerItemListId);
+        List<Booking> bookings = bookingRepository.findAllByItemId(ownerItemListId);
         Map<Long, BookingDto> lastBookings = new HashMap<>();
         Map<Long, BookingDto> nextBookings = new HashMap<>();
 
