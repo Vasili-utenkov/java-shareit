@@ -13,9 +13,12 @@ public class ItemRequestMapper {
                 .id(request.getId())
                 .description(request.getDescription())
                 .requester(UserMapper.toDto(request.getUser()))
-                .created(request.getCreated())
+                .created(request.getCreated() != null ? request.getCreated() : LocalDateTime.now())
                 .build();
     }
+
+
+
 
     public static ItemRequest toEntity(ItemRequestDto dto) {
         return ItemRequest.builder()
