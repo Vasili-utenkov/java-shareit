@@ -19,7 +19,7 @@ import ru.practicum.shareit.enums.BookingState;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/bookings")
+@RequestMapping(path = "/bookings2")
 @RequiredArgsConstructor
 @Slf4j
 public class BookingController {

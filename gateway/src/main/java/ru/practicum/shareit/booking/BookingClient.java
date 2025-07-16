@@ -10,13 +10,14 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
-import ru.practicum.shareit.booking.dto.BookItemRequestDto;
+
+import ru.practicum.shareit.booking.dto.BookingShortDto;
 import ru.practicum.shareit.enums.BookingState;
 import ru.practicum.shareit.client.BaseClient;
 
 @Service
 public class BookingClient extends BaseClient {
-    private static final String API_PREFIX = "/bookings";
+    private static final String API_PREFIX = "/bookings2";
 
     @Autowired
     public BookingClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
@@ -38,7 +39,7 @@ public class BookingClient extends BaseClient {
     }
 
 
-    public ResponseEntity<Object> bookItem(long userId, BookItemRequestDto requestDto) {
+    public ResponseEntity<Object> bookItem(long userId, BookingShortDto requestDto) {
         return post("", userId, requestDto);
     }
 
