@@ -6,10 +6,6 @@ target/
 !server/src/main/**/target/
 !server/src/test/**/target/
 
-*.class
-*.jar
-*.DS_Store
-*.log
 
 ### STS ###
 .apt_generated
