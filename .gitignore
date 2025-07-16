@@ -6,6 +6,10 @@ target/
 !server/src/main/**/target/
 !server/src/test/**/target/
 
+*.class
+*.jar
+*.DS_Store
+*.log
 
 ### STS ###
 .apt_generated
@@ -31,8 +35,8 @@ target/
 build/
 !gateway/src/main/**/build/
 !gateway/src/test/**/build/
-!server/src/main/**/target/
-!server/src/test/**/target/
+!server/src/main/**/build/
+!server/src/test/**/build/
 
 ### VS Code ###
 .vscode/
