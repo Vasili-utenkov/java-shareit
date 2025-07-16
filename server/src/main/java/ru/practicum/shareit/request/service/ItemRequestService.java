@@ -16,6 +16,7 @@ public interface ItemRequestService {
      */
     ItemRequestDto createItemRequest(Long userId, ItemRequestShortDto dto);
 
+
     /**
      * список своих запросов вместе с данными об ответах на них
      *
@@ -31,14 +32,4 @@ public interface ItemRequestService {
      * @return List<ItemRequestDto> список запросов
      */
     List<ItemRequestDto> findItemRequestsAllUser(Long userId);
-
-
-    /**
-     * данные о запросе
-     *
-     * @param requestId ID запроса
-     * @return ItemRequestDto
-     */
-    ItemRequestDto getItemRequest(Long requestId);
-
 }

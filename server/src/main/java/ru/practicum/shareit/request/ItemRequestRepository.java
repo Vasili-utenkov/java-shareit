@@ -15,6 +15,4 @@ public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> 
     @Query("SELECT r FROM ItemRequest r WHERE r.user.id <> :userID ORDER BY r.created DESC")
     List<ItemRequest> findItemRequestsAllUser(@Param("userID") Long userId);
 
-    ItemRequest getById(@Param("id") Long id);
-
 }

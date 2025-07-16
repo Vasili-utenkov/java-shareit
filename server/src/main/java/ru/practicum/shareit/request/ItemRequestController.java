@@ -1,10 +1,8 @@
 package ru.practicum.shareit.request;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -23,11 +21,10 @@ import java.util.List;
 public class ItemRequestController {
 
     private final ItemRequestService itemRequestService;
-    private final ItemRequestClient itemRequestClient;
 
     @PostMapping
     ItemRequestDto createItemRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                     @Valid @RequestBody ItemRequestShortDto itemRequestShortDto
+                                             @RequestBody ItemRequestShortDto itemRequestShortDto
     ) {
         log.warn("Добавление нового запроса. @PostMapping (/requests) ");
         log.warn("ItemRequestDto createItemRequest(@RequestHeader(X-Sharer-User-Id) Long {}, @RequestBody ItemRequestShortDto {}",
@@ -43,26 +40,6 @@ public class ItemRequestController {
         log.warn("List<ItemRequestDto> getItemRequestList (@RequestHeader(X-Sharer-User-Id) Long {}", userId);
 
         List<ItemRequestDto> dtoList = itemRequestService.findItemRequestsByUser(userId);
-        return dtoList;
-    }
-
-    @GetMapping("/all")
-    List<ItemRequestDto> getItemRequestListAllUser(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        log.warn("список запросов всех пользователя и ответы на них. @GetMapping (/requests/all) ");
-        log.warn("List<ItemRequestDto> getItemRequestList (@RequestHeader(X-Sharer-User-Id) Long {}", userId);
-
-        List<ItemRequestDto> dtoList = itemRequestService.findItemRequestsAllUser(userId);
-        return dtoList;
-    }
-
-    @GetMapping("/{requestId}")
-    List<ItemRequestDto> getItemRequestById(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                            @PathVariable Long requestId) {
-        log.warn("данные о запросе вместе с данными об ответах на него. @GetMapping (/requests/{requestId}) ");
-        log.warn("List<ItemRequestDto> getItemRequestList (@RequestHeader(X-Sharer-User-Id) Long {}, @PathVariable Long {})"
-                , userId, requestId);
-
-        List<ItemRequestDto> dtoList = itemRequestService.findItemRequestsAllUser(userId);
         return dtoList;
     }
 
