@@ -1,54 +1,43 @@
 package ru.practicum.shareit.booking;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.dto.BookingDto;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.booking.dto.BookingShortDto;
-import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.enums.BookingState;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
 @Slf4j
 public class BookingController {
-
-    private final BookingService bookingService;
-
     private final BookingClient bookingClient;
 
-//    @PostMapping
-//    public BookingDto createBooking(
-//            @RequestHeader("X-Sharer-User-Id") Long bookerId,
-//            @Valid @RequestBody BookingShortDto bookingDto
-//    ) {
-//        log.warn("Добавление бронирования. @PostMapping (/bookings) ");
-//        log.warn("createBooking( @RequestHeader(X-Sharer-User-Id) Long {}, @Valid @RequestBody BookingShortDto {} )",
-//                bookerId, bookingDto);
-//        BookingDto dto = bookingService.createBooking(bookerId, bookingDto);
-//        log.warn("ИТОГ: Создали бронь " + dto);
-//        return dto;
-//    }
-
     @PostMapping
-    public ResponseEntity<Object> bookItem(@RequestHeader("X-Sharer-User-Id") long userId,
-                                           @RequestBody @Valid BookingShortDto requestDto) {
-        log.info("Creating booking {}, userId={}", requestDto, userId);
-        return bookingClient.bookItem(userId, requestDto);
+    public ResponseEntity<Object> createBooking(@RequestHeader("X-Sharer-User-Id") Long bookerId,
+                                                @RequestBody @Valid BookingShortDto bookingDto) {
+        log.warn("Добавление бронирования. @PostMapping (/bookings) ");
+        log.warn("createBooking( @RequestHeader(X-Sharer-User-Id) Long {}, @Valid @RequestBody BookingShortDto {} )",
+                bookerId, bookingDto);
+
+        ResponseEntity<Object> response = bookingClient.createBooking(bookerId, bookingDto);
+        return response;
     }
 
-
     @PatchMapping("/{bookingId}")
-    public BookingDto approveBooking(
-            @RequestHeader("X-Sharer-User-Id") Long bookerId,
-            @PathVariable Long bookingId,
+    public ResponseEntity<Object> approveBooking(
+            @RequestHeader("X-Sharer-User-Id") long bookerId,
+            @PathVariable long bookingId,
             @RequestParam Boolean approved
     ) {
         log.warn("Подтверждение/отклонение бронирования. @PatchMapping (/bookings/{bookingId})");
@@ -57,57 +46,49 @@ public class BookingController {
                 "@PathVariable Long {}," +
                 "@RequestParam Boolean {}" +
                 ")", bookerId, bookingId, approved);
-        BookingDto dto = bookingService.approveBooking(bookerId, bookingId, approved);
-        return dto;
+
+        ResponseEntity<Object> response = bookingClient.approveBooking(bookerId, bookingId, approved);
+        return response;
     }
 
     @GetMapping("/{bookingId}")
-    public BookingDto getBookingById(
-            @RequestHeader("X-Sharer-User-Id") Long bookerId,
-            @PathVariable Long bookingId
-    ) {
+    public ResponseEntity<Object> getBookingById(@RequestHeader("X-Sharer-User-Id") long bookerId,
+                                                 @PathVariable long bookingId) {
         log.warn("Получение данных о бронировании по ID брони. @GetMapping (/bookings/{bookingId})");
         log.warn("getBookingById(@RequestHeader(X-Sharer-User-Id) Long {}, @PathVariable Long {})",
                 bookerId, bookingId);
-        BookingDto dto = bookingService.getBookingById(bookerId, bookingId);
-        return dto;
+
+        ResponseEntity<Object> response = bookingClient.getBookingById(bookerId, bookingId);
+        return response;
     }
 
     @GetMapping
-    public List<BookingDto> getUserBookings(
-            @RequestHeader("X-Sharer-User-Id") Long userId,
-            @RequestParam(name = "state", defaultValue = "ALL") BookingState state
-    ) {
+    public ResponseEntity<Object> getUserBookings(
+            @RequestHeader("X-Sharer-User-Id") long userId,
+            @RequestParam(name = "state", defaultValue = "all") String stateParam) {
+        BookingState state = BookingState.from(stateParam)
+                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
         log.warn("Получение списка бронирований для пользователя. @GetMapping (/bookings)");
         log.warn("getUserBookings(@RequestHeader(X-Sharer-User-Id) Long {}," +
                         " @RequestParam(name = state, defaultValue = ALL) BookingState {})",
                 userId, state);
-        List<BookingDto> bookingDtoList = bookingService.getUserBookings(userId, state);
-        return bookingDtoList;
+
+        ResponseEntity<Object> response = bookingClient.getUserBookings(userId, state);
+        return response;
     }
 
-//    @GetMapping
-//    public ResponseEntity<Object> getBookings(@RequestHeader("X-Sharer-User-Id") long userId,
-//                                              @RequestParam(name = "state", defaultValue = "all") String stateParam,
-//                                              @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-//                                              @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-//        BookingState state = BookingState.from(stateParam)
-//                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
-//        log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
-//        return bookingClient.getBookings(userId, state, from, size);
-//    }
-
-
     @GetMapping("/owner")
-    public List<BookingDto> getOwnerBookings(
+    public ResponseEntity<Object> getOwnerBookings(
             @RequestHeader("X-Sharer-User-Id") Long ownerId,
-            @RequestParam(name = "state", defaultValue = "ALL") BookingState state
-    ) {
+            @RequestParam(name = "state", defaultValue = "all") String stateParam) {
+        BookingState state = BookingState.from(stateParam)
+                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
         log.warn("Получение списка бронирований всех вещей по владельцу вещи. @GetMapping (/bookings/owner)");
         log.warn("getOwnerBookings(@RequestHeader(X-Sharer-User-Id) Long {}," +
                         " @RequestParam(name = state, defaultValue = ALL) BookingState {})",
                 ownerId, state);
-        List<BookingDto> bookingDtoList = bookingService.getOwnerBookings(ownerId, state);
-        return bookingDtoList;
+
+        ResponseEntity<Object> response = bookingClient.getOwnerBookings(ownerId, state);
+        return response;
     }
 }

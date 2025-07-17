@@ -14,7 +14,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/users2")
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {

@@ -1,8 +1,5 @@
 package ru.practicum.shareit.client;
 
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -12,12 +9,18 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+import java.util.Map;
+
 public class BaseClient {
     protected final RestTemplate rest;
 
     public BaseClient(RestTemplate rest) {
         this.rest = rest;
     }
+
+// GetMapping
+
 
     protected ResponseEntity<Object> get(String path) {
         return get(path, null, null);
@@ -27,9 +30,19 @@ public class BaseClient {
         return get(path, userId, null);
     }
 
+    protected ResponseEntity<Object> get(String path, @Nullable Map<String, Object> parameters) {
+        return get(path, null, parameters);
+    }
+
+
     protected ResponseEntity<Object> get(String path, Long userId, @Nullable Map<String, Object> parameters) {
         return makeAndSendRequest(HttpMethod.GET, path, userId, parameters, null);
     }
+
+
+
+// PostMapping
+
 
     protected <T> ResponseEntity<Object> post(String path, T body) {
         return post(path, null, null, body);
@@ -43,6 +56,9 @@ public class BaseClient {
         return makeAndSendRequest(HttpMethod.POST, path, userId, parameters, body);
     }
 
+// PutMapping
+
+
     protected <T> ResponseEntity<Object> put(String path, long userId, T body) {
         return put(path, userId, null, body);
     }
@@ -50,6 +66,9 @@ public class BaseClient {
     protected <T> ResponseEntity<Object> put(String path, long userId, @Nullable Map<String, Object> parameters, T body) {
         return makeAndSendRequest(HttpMethod.PUT, path, userId, parameters, body);
     }
+
+// PatchMapping
+
 
     protected <T> ResponseEntity<Object> patch(String path, T body) {
         return patch(path, null, null, body);
@@ -66,6 +85,9 @@ public class BaseClient {
     protected <T> ResponseEntity<Object> patch(String path, Long userId, @Nullable Map<String, Object> parameters, T body) {
         return makeAndSendRequest(HttpMethod.PATCH, path, userId, parameters, body);
     }
+
+// DeleteMapping
+
 
     protected ResponseEntity<Object> delete(String path) {
         return delete(path, null, null);

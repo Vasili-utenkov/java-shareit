@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @Slf4j
-@RequestMapping(path = "/requests")
+@RequestMapping(path = "/requests2")
 @RequiredArgsConstructor
 public class ItemRequestController {
 
