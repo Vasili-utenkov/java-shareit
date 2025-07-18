@@ -3,6 +3,7 @@ package ru.practicum.shareit.request.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.UserNotExistsException;
 import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestMapper;
@@ -58,7 +59,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return list.stream().map(ItemRequestMapper::toDto).collect(Collectors.toList());
     }
 
-
     /**
      * список НЕ своих запросов вместе с данными об ответах на них
      *
@@ -73,5 +73,36 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         List<ItemRequest> list = itemRequestRepository.findItemRequestsAllUser(userId);
 
         return list.stream().map(ItemRequestMapper::toDto).collect(Collectors.toList());
+    }
+
+
+    /**
+     * данные о запросе
+     *
+     * @param requestId ID запроса
+     * @return ItemRequestDto
+     */
+    @Override
+    public ItemRequestDto getItemRequest(Long requestId) {
+        return ItemRequestMapper.toDto(validateItemRequestExists(requestId));
+    }
+
+
+    /**
+     * Проверка переданого в поиск кода пользователя
+     *
+     * @param requestId ID запроса
+     */
+    @Override
+    public ItemRequest validateItemRequestExists(Long requestId) {
+        log.warn("validateUserId(Long {})", requestId);
+        // Проверка на null ID
+        if (requestId == null) {
+            throw new IllegalArgumentException("ID пользователя не может быть null");
+        }
+
+        // Проверка существования пользователя
+        return itemRequestRepository.findById(requestId)
+                .orElseThrow(() -> new UserNotExistsException("Пользователь с ID " + requestId + " не найден"));
     }
 }

@@ -26,11 +26,12 @@ public class BookingController {
     @PostMapping
     public ResponseEntity<Object> createBooking(@RequestHeader("X-Sharer-User-Id") Long bookerId,
                                                 @RequestBody @Valid BookingShortDto bookingDto) {
-        log.warn("Добавление бронирования. @PostMapping (/bookings) ");
+        log.warn("GATEWAY:: Добавление бронирования. @PostMapping (/bookings) ");
         log.warn("createBooking( @RequestHeader(X-Sharer-User-Id) Long {}, @Valid @RequestBody BookingShortDto {} )",
                 bookerId, bookingDto);
 
         ResponseEntity<Object> response = bookingClient.createBooking(bookerId, bookingDto);
+        log.warn("GATEWAY:: ИТОГ: Создали бронирование " + response);
         return response;
     }
 
@@ -40,7 +41,7 @@ public class BookingController {
             @PathVariable long bookingId,
             @RequestParam Boolean approved
     ) {
-        log.warn("Подтверждение/отклонение бронирования. @PatchMapping (/bookings/{bookingId})");
+        log.warn("GATEWAY:: Подтверждение/отклонение бронирования. @PatchMapping (/bookings/{bookingId})");
         log.warn("approveBooking(" +
                 "@RequestHeader(X-Sharer-User-Id) Long {}," +
                 "@PathVariable Long {}," +
@@ -54,7 +55,7 @@ public class BookingController {
     @GetMapping("/{bookingId}")
     public ResponseEntity<Object> getBookingById(@RequestHeader("X-Sharer-User-Id") long bookerId,
                                                  @PathVariable long bookingId) {
-        log.warn("Получение данных о бронировании по ID брони. @GetMapping (/bookings/{bookingId})");
+        log.warn("GATEWAY:: Получение данных о бронировании по ID брони. @GetMapping (/bookings/{bookingId})");
         log.warn("getBookingById(@RequestHeader(X-Sharer-User-Id) Long {}, @PathVariable Long {})",
                 bookerId, bookingId);
 
@@ -68,7 +69,7 @@ public class BookingController {
             @RequestParam(name = "state", defaultValue = "all") String stateParam) {
         BookingState state = BookingState.from(stateParam)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
-        log.warn("Получение списка бронирований для пользователя. @GetMapping (/bookings)");
+        log.warn("GATEWAY:: Получение списка бронирований для пользователя. @GetMapping (/bookings)");
         log.warn("getUserBookings(@RequestHeader(X-Sharer-User-Id) Long {}," +
                         " @RequestParam(name = state, defaultValue = ALL) BookingState {})",
                 userId, state);
@@ -83,7 +84,7 @@ public class BookingController {
             @RequestParam(name = "state", defaultValue = "all") String stateParam) {
         BookingState state = BookingState.from(stateParam)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
-        log.warn("Получение списка бронирований всех вещей по владельцу вещи. @GetMapping (/bookings/owner)");
+        log.warn("GATEWAY:: Получение списка бронирований всех вещей по владельцу вещи. @GetMapping (/bookings/owner)");
         log.warn("getOwnerBookings(@RequestHeader(X-Sharer-User-Id) Long {}," +
                         " @RequestParam(name = state, defaultValue = ALL) BookingState {})",
                 ownerId, state);

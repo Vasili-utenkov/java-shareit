@@ -2,12 +2,7 @@ package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestShortDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
@@ -23,25 +18,48 @@ public class ItemRequestController {
     private final ItemRequestService itemRequestService;
 
     @PostMapping
-    ItemRequestDto createItemRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ItemRequestDto createItemRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
                                              @RequestBody ItemRequestShortDto itemRequestShortDto
     ) {
-        log.warn("Добавление нового запроса. @PostMapping (/requests) ");
+        log.warn("SERVER:: Добавление нового запроса. @PostMapping (/requests) ");
         log.warn("ItemRequestDto createItemRequest(@RequestHeader(X-Sharer-User-Id) Long {}, @RequestBody ItemRequestShortDto {}",
                 userId, itemRequestShortDto);
         ItemRequestDto dto = itemRequestService.createItemRequest(userId, itemRequestShortDto);
-        log.warn("ИТОГ: Создали запрос " + dto);
+        log.warn("SERVER:: ИТОГ: Создали запрос " + dto);
         return dto;
     }
 
     @GetMapping
-    List<ItemRequestDto> getItemRequestListByUser(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        log.warn("список запросов пользователя и ответы на них. @GetMapping (/requests) ");
+    public List<ItemRequestDto> getItemRequestListByUser(@RequestHeader("X-Sharer-User-Id") Long userId) {
+        log.warn("SERVER:: список запросов пользователя и ответы на них. @GetMapping (/requests) ");
         log.warn("List<ItemRequestDto> getItemRequestList (@RequestHeader(X-Sharer-User-Id) Long {}", userId);
 
         List<ItemRequestDto> dtoList = itemRequestService.findItemRequestsByUser(userId);
         return dtoList;
     }
 
+    @GetMapping("/all")
+    public List<ItemRequestDto> getItemRequestListAllUser(
+            @RequestHeader("X-Sharer-User-Id") long userId
+    ) {
+        log.warn("SERVER:: список запросов всех пользователя и ответы на них. @GetMapping (/requests/all) ");
+        log.warn("List<ItemRequestDto> getItemRequestList (@RequestHeader(X-Sharer-User-Id) Long {}", userId);
+
+        List<ItemRequestDto> dtoList = itemRequestService.findItemRequestsAllUser(userId);
+        return dtoList;
+    }
+
+    @GetMapping("/{requestId}")
+    public ItemRequestDto getItemRequestById(
+            @RequestHeader("X-Sharer-User-Id") long userId,
+            @PathVariable long requestId
+    ) {
+        log.warn("SERVER:: данные о запросе вместе с данными об ответах на него. @GetMapping (/requests/{requestId}) ");
+        log.warn("List<ItemRequestDto> getItemRequestList (@RequestHeader(X-Sharer-User-Id) Long {}, @PathVariable Long {})",
+                userId, requestId);
+
+        ItemRequestDto dto = itemRequestService.getItemRequest(requestId);
+        return dto;
+    }
 
 }

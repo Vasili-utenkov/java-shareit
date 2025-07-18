@@ -43,7 +43,6 @@ public class BaseClient {
 
 // PostMapping
 
-
     protected <T> ResponseEntity<Object> post(String path, T body) {
         return post(path, null, null, body);
     }

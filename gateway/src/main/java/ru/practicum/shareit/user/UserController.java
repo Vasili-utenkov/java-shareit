@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -8,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.service.UserService;
 
 @RestController
 @RequestMapping("/users")
@@ -16,38 +16,46 @@ import ru.practicum.shareit.user.service.UserService;
 @Slf4j
 public class UserController {
 
-    private final UserService userService;
+    private final UserClient userClient;
 
     @PostMapping
-    public UserDto createUser(@Valid @RequestBody UserDto userDto) {
-        log.warn("Создание пользователя. @PostMapping (/users) ");
+    public ResponseEntity<Object> createUser(
+            @Valid @RequestBody UserDto userDto
+    ) {
+        log.warn("GATEWAY:: Создание пользователя. @PostMapping (/users) ");
         log.warn("createUser(@Valid @RequestBody UserDto {})", userDto);
-        UserDto dto = userService.createUser(userDto);
-        log.warn("ИТОГ: Создали пользователя " + dto);
-        return dto;
+        ResponseEntity<Object> response = userClient.createUser(userDto);
+        log.warn("GATEWAY:: ИТОГ: Создали пользователя " + response);
+        return response;
     }
 
     @GetMapping("/{userId}")
-    public UserDto getUserByID(@PathVariable Long userId) {
-        log.warn("Получение пользователя по коду пользователя. @GetMapping (/users/{userId}) ");
+    public ResponseEntity<Object> getUserByID(
+            @PathVariable long userId
+    ) {
+        log.warn("GATEWAY:: Получение пользователя по коду пользователя. @GetMapping (/users/{userId}) ");
         log.warn("getUserByID(@PathVariable Long {})", userId);
-        UserDto dto = userService.getUserByID(userId);
-        return dto;
+        ResponseEntity<Object> response = userClient.getUserByID(userId);
+        return response;
     }
 
     @DeleteMapping("/{userId}")
-    public void deleteUserByID(@PathVariable Long userId) {
-        log.warn("Удаление пользователя по коду пользователя. @DeleteMapping (/users/{userId}) ");
+    public void deleteUserByID(
+            @PathVariable long userId
+    ) {
+        log.warn("GATEWAY:: Удаление пользователя по коду пользователя. @DeleteMapping (/users/{userId}) ");
         log.warn("deleteUserByID(@PathVariable Long {})", userId);
-        userService.deleteUserByID(userId);
+        ResponseEntity<Object> response = userClient.deleteUserByID(userId);
     }
 
     @PatchMapping("/{userId}")
-    public UserDto updateUserByID(@PathVariable Long userId, @RequestBody UserDto userDto) {
-        log.warn("Изменение пользователя по коду пользователя. @PatchMapping (/users/{userId}) ");
+    public ResponseEntity<Object> updateUserByID(
+            @PathVariable long userId,
+            @Valid @RequestBody UserDto userDto) {
+        log.warn("GATEWAY:: Изменение пользователя по коду пользователя. @PatchMapping (/users/{userId}) ");
         log.warn("updateUserByID(@PathVariable Long {}, @RequestBody UserDto {})", userId, userDto);
-        UserDto dto = userService.updateUserByID(userId, userDto);
-        log.warn("ИТОГ Изменили пользователя на " + dto);
-        return dto;
+        ResponseEntity<Object> response = userClient.updateUserByID(userId, userDto);
+        log.warn("GATEWAY:: ИТОГ Изменили пользователя на " + response);
+        return response;
     }
 }

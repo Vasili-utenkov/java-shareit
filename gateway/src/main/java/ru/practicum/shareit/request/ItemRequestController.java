@@ -3,6 +3,7 @@ package ru.practicum.shareit.request;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,11 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestShortDto;
-import ru.practicum.shareit.request.service.ItemRequestService;
 
-import java.util.List;
 
 @RestController
 @Slf4j
@@ -22,48 +20,54 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemRequestController {
 
-    private final ItemRequestService itemRequestService;
     private final ItemRequestClient itemRequestClient;
 
     @PostMapping
-    ItemRequestDto createItemRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                     @Valid @RequestBody ItemRequestShortDto itemRequestShortDto
+    public ResponseEntity<Object> createItemRequest(
+            @RequestHeader("X-Sharer-User-Id") long userId,
+            @Valid @RequestBody ItemRequestShortDto itemRequestShortDto
     ) {
-        log.warn("Добавление нового запроса. @PostMapping (/requests) ");
+        log.warn("GATEWAY:: Добавление нового запроса. @PostMapping (/requests) ");
         log.warn("ItemRequestDto createItemRequest(@RequestHeader(X-Sharer-User-Id) Long {}, @RequestBody ItemRequestShortDto {}",
                 userId, itemRequestShortDto);
-        ItemRequestDto dto = itemRequestService.createItemRequest(userId, itemRequestShortDto);
-        log.warn("ИТОГ: Создали запрос " + dto);
-        return dto;
+        ResponseEntity<Object> response = itemRequestClient.createItemRequest(userId, itemRequestShortDto);
+        log.warn("GATEWAY:: ИТОГ: Создали запрос " + response);
+        return response;
     }
 
     @GetMapping
-    List<ItemRequestDto> getItemRequestListByUser(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        log.warn("список запросов пользователя и ответы на них. @GetMapping (/requests) ");
+    public ResponseEntity<Object> getItemRequestListByUser(
+            @RequestHeader("X-Sharer-User-Id") long userId
+    ) {
+        log.warn("GATEWAY:: список запросов пользователя и ответы на них. @GetMapping (/requests) ");
         log.warn("List<ItemRequestDto> getItemRequestList (@RequestHeader(X-Sharer-User-Id) Long {}", userId);
 
-        List<ItemRequestDto> dtoList = itemRequestService.findItemRequestsByUser(userId);
-        return dtoList;
+        ResponseEntity<Object> response = itemRequestClient.getItemRequestListByUser(userId);
+        return response;
     }
 
     @GetMapping("/all")
-    List<ItemRequestDto> getItemRequestListAllUser(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        log.warn("список запросов всех пользователя и ответы на них. @GetMapping (/requests/all) ");
+    public ResponseEntity<Object> getItemRequestListAllUser(
+            @RequestHeader("X-Sharer-User-Id") long userId
+    ) {
+        log.warn("GATEWAY:: список запросов всех пользователя и ответы на них. @GetMapping (/requests/all) ");
         log.warn("List<ItemRequestDto> getItemRequestList (@RequestHeader(X-Sharer-User-Id) Long {}", userId);
 
-        List<ItemRequestDto> dtoList = itemRequestService.findItemRequestsAllUser(userId);
-        return dtoList;
+        ResponseEntity<Object> response = itemRequestClient.getItemRequestListAllUser(userId);
+        return response;
     }
 
     @GetMapping("/{requestId}")
-    List<ItemRequestDto> getItemRequestById(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                            @PathVariable Long requestId) {
-        log.warn("данные о запросе вместе с данными об ответах на него. @GetMapping (/requests/{requestId}) ");
-        log.warn("List<ItemRequestDto> getItemRequestList (@RequestHeader(X-Sharer-User-Id) Long {}, @PathVariable Long {})"
-                , userId, requestId);
+    public ResponseEntity<Object> getItemRequestById(
+            @RequestHeader("X-Sharer-User-Id") long userId,
+            @PathVariable long requestId
+    ) {
+        log.warn("GATEWAY:: данные о запросе вместе с данными об ответах на него. @GetMapping (/requests/{requestId}) ");
+        log.warn("List<ItemRequestDto> getItemRequestList (@RequestHeader(X-Sharer-User-Id) Long {}, @PathVariable Long {})",
+                userId, requestId);
 
-        List<ItemRequestDto> dtoList = itemRequestService.findItemRequestsAllUser(userId);
-        return dtoList;
+        ResponseEntity<Object> response = itemRequestClient.getItemRequestById(userId, requestId);
+        return response;
     }
 
 
