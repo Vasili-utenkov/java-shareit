@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ItemRequestShortDto {
+public class ItemRequestShortDtoGW {
     @NotBlank(message = "Описание не может быть пустым")
     private String description;
 }

@@ -6,10 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.comment.dto.CommentDto;
-import ru.practicum.shareit.request.dto.ItemRequestDto;
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.booking.dto.BookingDtoGW;
+import ru.practicum.shareit.comment.dto.CommentDtoGW;
+import ru.practicum.shareit.request.dto.ItemRequestDtoGW;
+import ru.practicum.shareit.user.dto.UserDtoGW;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ItemDto {
+public class ItemDtoGW {
     private Long id;
     @NotBlank(message = "Наименование не может быть пустым")
     private String name;
@@ -25,11 +25,12 @@ public class ItemDto {
     private String description;
     @NotNull(message = "Статус доступности аренды не может быть null")
     private Boolean available; // Доступна для аренды?
-    private UserDto owner; // владелец (User)
-    private ItemRequestDto request; // запрос (ItemRequest), если вещь создана в ответ на него
-    private List<CommentDto> comments;
+    private UserDtoGW owner; // владелец (User)
+    private ItemRequestDtoGW request; // запрос (ItemRequest), если вещь создана в ответ на него
+    private List<CommentDtoGW> comments;
 
-    private BookingDto lastBooking;
-    private BookingDto nextBooking;
+
+    private BookingDtoGW lastBooking;
+    private BookingDtoGW nextBooking;
 }
 

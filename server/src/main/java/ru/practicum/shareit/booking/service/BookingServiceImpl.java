@@ -144,7 +144,7 @@ public class BookingServiceImpl implements BookingService {
 
         return bookings.stream()
                 .map(BookingMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
 
     }
 
@@ -163,7 +163,7 @@ public class BookingServiceImpl implements BookingService {
 
         return bookings.stream()
                 .map(BookingMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 

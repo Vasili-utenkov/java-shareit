@@ -8,7 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserDtoGW;
 
 @RestController
 @RequestMapping("/users")
@@ -20,10 +20,10 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<Object> createUser(
-            @Valid @RequestBody UserDto userDto
+            @Valid @RequestBody UserDtoGW userDto
     ) {
         log.warn("GATEWAY:: Создание пользователя. @PostMapping (/users) ");
-        log.warn("createUser(@Valid @RequestBody UserDto {})", userDto);
+        log.warn("createUser(@Valid @RequestBody UserDtoGW {})", userDto);
         ResponseEntity<Object> response = userClient.createUser(userDto);
         log.warn("GATEWAY:: ИТОГ: Создали пользователя " + response);
         return response;
@@ -51,9 +51,9 @@ public class UserController {
     @PatchMapping("/{userId}")
     public ResponseEntity<Object> updateUserByID(
             @PathVariable long userId,
-            @Valid @RequestBody UserDto userDto) {
+            @Valid @RequestBody UserDtoGW userDto) {
         log.warn("GATEWAY:: Изменение пользователя по коду пользователя. @PatchMapping (/users/{userId}) ");
-        log.warn("updateUserByID(@PathVariable Long {}, @RequestBody UserDto {})", userId, userDto);
+        log.warn("updateUserByID(@PathVariable Long {}, @RequestBody UserDtoGW {})", userId, userDto);
         ResponseEntity<Object> response = userClient.updateUserByID(userId, userDto);
         log.warn("GATEWAY:: ИТОГ Изменили пользователя на " + response);
         return response;

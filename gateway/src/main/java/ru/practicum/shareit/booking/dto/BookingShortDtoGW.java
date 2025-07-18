@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @StartBeforeEnd(startField = "start", endField = "end")
-public class BookingShortDto {
+public class BookingShortDtoGW {
     @NotNull(message = "Должен присутствовать предмет  аренды")
     private Long itemId;
     @FutureOrPresent(message = "Дата начала аренды должна быть в будущем")

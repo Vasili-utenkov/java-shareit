@@ -8,6 +8,7 @@ import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class CommentMapper {
     }
 
     public static List<CommentDto> toDtoList(List<Comment> comments) {
-        return comments.stream().map(CommentMapper::toDto).toList();
+        return comments.stream().map(CommentMapper::toDto).collect(Collectors.toList());
     }
 
 }

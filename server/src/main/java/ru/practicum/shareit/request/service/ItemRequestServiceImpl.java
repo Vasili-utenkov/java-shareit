@@ -56,7 +56,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         User user = userService.validateUserExists(userId);
         List<ItemRequest> list = itemRequestRepository.findItemRequestsByUser(userId);
 
-        return list.stream().map(ItemRequestMapper::toDto).collect(Collectors.toList());
+        return list.stream().map(ItemRequestMapper::toDto).toList();
     }
 
     /**
@@ -72,7 +72,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         User user = userService.validateUserExists(userId);
         List<ItemRequest> list = itemRequestRepository.findItemRequestsAllUser(userId);
 
-        return list.stream().map(ItemRequestMapper::toDto).collect(Collectors.toList());
+        return list.stream().map(ItemRequestMapper::toDto).toList();
     }
 
 

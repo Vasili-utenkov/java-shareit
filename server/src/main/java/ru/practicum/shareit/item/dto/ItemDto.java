@@ -23,7 +23,6 @@ public class ItemDto {
     private UserDto owner; // владелец (User)
     private ItemRequestDto request; // запрос (ItemRequest), если вещь создана в ответ на него
     private List<CommentDto> comments;
-
     private BookingDto lastBooking;
     private BookingDto nextBooking;
 }

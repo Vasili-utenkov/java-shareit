@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.comment.dto.CommentCreateDto;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.comment.dto.CommentCreateDtoGW;
+import ru.practicum.shareit.item.dto.ItemDtoGW;
 
 @RestController
 @RequestMapping("/items")
@@ -21,9 +21,9 @@ public class ItemController {
     @PostMapping
     public ResponseEntity<Object> createItem(
             @RequestHeader("X-Sharer-User-Id") long ownerId,
-            @RequestBody @Valid ItemDto item) {
+            @RequestBody @Valid ItemDtoGW item) {
         log.warn("GATEWAY:: Добавление новой вещи. @PostMapping (/items) ");
-        log.warn("createItem(@RequestHeader(X-Sharer-User-Id) Long {}, @RequestBody @Valid ItemDto {})",
+        log.warn("createItem(@RequestHeader(X-Sharer-User-Id) Long {}, @RequestBody @Valid ItemDtoGW {})",
                 ownerId, item);
         ResponseEntity<Object> response = itemClient.createItem(ownerId, item);
         log.warn("GATEWAY:: ИТОГ: Создали предмет " + response);
@@ -34,10 +34,10 @@ public class ItemController {
     public ResponseEntity<Object> updateItemByItemID(
             @RequestHeader("X-Sharer-User-Id") long ownerId,
             @PathVariable long itemId,
-            @RequestBody ItemDto item
+            @RequestBody ItemDtoGW item
     ) {
         log.warn("GATEWAY:: Редактирование вещи. @PatchMapping (/items/{itemId}) ");
-        log.warn("updateItemByItemID(@RequestHeader(X-Sharer-User-Id) Long {}, @PathVariable Long {}, @RequestBody ItemDto {})",
+        log.warn("updateItemByItemID(@RequestHeader(X-Sharer-User-Id) Long {}, @PathVariable Long {}, @RequestBody ItemDtoGW {})",
                 ownerId, itemId, item);
 
         ResponseEntity<Object> response = itemClient.updateItemByItemID(ownerId, itemId, item);
@@ -93,17 +93,17 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public ResponseEntity<Object>  createComment(
-            @Valid @RequestBody CommentCreateDto commentCreateDto,
+            @Valid @RequestBody CommentCreateDtoGW commentCreateDtoGW,
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @PathVariable Long itemId
     ) {
         log.warn("GATEWAY:: Добавить коментарий по вещи. @PostMapping(/items/{itemId}/comment) ");
         log.warn("createComment(" +
-                "@Valid @RequestBody CommentCreateDto {}," +
+                "@Valid @RequestBody CommentCreateDtoGW {}," +
                 "@RequestHeader(X-Sharer-User-Id) Long {}," +
                 "@PathVariable Long {})",
-                commentCreateDto, userId, itemId);
-        ResponseEntity<Object> response = itemClient.addCommentToItem(commentCreateDto, userId, itemId);
+                commentCreateDtoGW, userId, itemId);
+        ResponseEntity<Object> response = itemClient.addCommentToItem(commentCreateDtoGW, userId, itemId);
         log.warn("GATEWAY:: ИТОГ: Создали комментарий: " + response);
         return response;
     }

@@ -7,8 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.enums.BookingStatus;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.item.dto.ItemDtoGW;
+import ru.practicum.shareit.user.dto.UserDtoGW;
 import ru.practicum.shareit.validators.StartBeforeEnd;
 
 import java.time.LocalDateTime;
@@ -18,10 +18,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @StartBeforeEnd(startField = "start", endField = "end")
-public class BookingDto {
+public class BookingDtoGW {
     private Long id;
-    private ItemDto item;
-    private UserDto booker;
+    private ItemDtoGW item;
+    private UserDtoGW booker;
     @NotNull(message = "Дата начала аренды должна быть")
     @FutureOrPresent(message = "Дата начала аренды не должна быть в прошлом")
     private LocalDateTime start;

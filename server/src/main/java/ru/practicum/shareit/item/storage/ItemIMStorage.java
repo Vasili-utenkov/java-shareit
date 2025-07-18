@@ -113,7 +113,7 @@ public class ItemIMStorage implements ItemStorage {
                 .filter(Item::getAvailable)
                 .filter(item -> (item.getName().toLowerCase().contains(searchText))
                 || item.getDescription().toLowerCase().contains(searchText))
-                .collect(Collectors.toList());
+                .toList();
 
         return list;
     }

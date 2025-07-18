@@ -118,7 +118,7 @@ public class ItemServiceImpl implements ItemService {
 
         List<Long> ownerItemListId = ownerItemList.stream()
                 .map(Item::getId)
-                .collect(Collectors.toList());
+                .toList();
 
         // Получаем комментарии для каждой вещи
         List<Comment> commentsAllList = commentRepository.findAllByListItemId(ownerItemListId);

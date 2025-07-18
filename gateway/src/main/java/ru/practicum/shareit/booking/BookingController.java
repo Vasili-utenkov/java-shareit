@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.shareit.booking.dto.BookingShortDto;
+import ru.practicum.shareit.booking.dto.BookingShortDtoGW;
 import ru.practicum.shareit.enums.BookingState;
 
 @RestController
@@ -25,9 +25,9 @@ public class BookingController {
 
     @PostMapping
     public ResponseEntity<Object> createBooking(@RequestHeader("X-Sharer-User-Id") Long bookerId,
-                                                @RequestBody @Valid BookingShortDto bookingDto) {
+                                                @RequestBody @Valid BookingShortDtoGW bookingDto) {
         log.warn("GATEWAY:: Добавление бронирования. @PostMapping (/bookings) ");
-        log.warn("createBooking( @RequestHeader(X-Sharer-User-Id) Long {}, @Valid @RequestBody BookingShortDto {} )",
+        log.warn("createBooking( @RequestHeader(X-Sharer-User-Id) Long {}, @Valid @RequestBody BookingShortDtoGW {} )",
                 bookerId, bookingDto);
 
         ResponseEntity<Object> response = bookingClient.createBooking(bookerId, bookingDto);

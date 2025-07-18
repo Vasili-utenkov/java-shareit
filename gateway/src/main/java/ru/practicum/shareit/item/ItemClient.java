@@ -9,8 +9,8 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
-import ru.practicum.shareit.comment.dto.CommentCreateDto;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.comment.dto.CommentCreateDtoGW;
+import ru.practicum.shareit.item.dto.ItemDtoGW;
 
 import java.util.Map;
 
@@ -31,16 +31,16 @@ public class ItemClient extends BaseClient {
     }
 
 
-    public ResponseEntity<Object> createItem(long userId, ItemDto requestDto) {
+    public ResponseEntity<Object> createItem(long userId, ItemDtoGW requestDto) {
         log.warn("ItemClient:: Добавление новой вещи. @PostMapping (/items):" +
-                        " createItem(long {}, ItemDto {})",
+                        " createItem(long {}, ItemDtoGW {})",
                 userId, requestDto);
         return post("", userId, requestDto);
     }
 
-    public ResponseEntity<Object> updateItemByItemID(long ownerId, long itemId, ItemDto item) {
+    public ResponseEntity<Object> updateItemByItemID(long ownerId, long itemId, ItemDtoGW item) {
         log.warn("ItemClient:: Редактирование вещи. @PatchMapping (/items/{itemId}): " +
-                        "updateItemByItemID(long {}, long {}, ItemDto {})",
+                        "updateItemByItemID(long {}, long {}, ItemDtoGW {})",
                 ownerId, itemId, item);
         return patch("/" + itemId, ownerId, item);
     }
@@ -74,9 +74,9 @@ public class ItemClient extends BaseClient {
         return get("/search", parameters);
     }
 
-    public ResponseEntity<Object> addCommentToItem(CommentCreateDto dto, long userId, long itemId) {
+    public ResponseEntity<Object> addCommentToItem(CommentCreateDtoGW dto, long userId, long itemId) {
         log.warn("ItemClient:: Добавить коментарий по вещи. @PostMapping(/items/{itemId}/comment): createComment(" +
-                        "CommentCreateDto {}, long {}, long {})",
+                        "CommentCreateDtoGW {}, long {}, long {})",
                         dto, userId, itemId);
         return post("/" + itemId + "/comment)", userId, dto);
     }

@@ -9,7 +9,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
-import ru.practicum.shareit.request.dto.ItemRequestShortDto;
+import ru.practicum.shareit.request.dto.ItemRequestShortDtoGW;
 
 
 @Service
@@ -28,9 +28,9 @@ public class ItemRequestClient extends BaseClient {
         );
     }
 
-    ResponseEntity<Object> createItemRequest(long userId, ItemRequestShortDto dto) {
+    ResponseEntity<Object> createItemRequest(long userId, ItemRequestShortDtoGW dto) {
         log.warn("ItemRequestClient:: Добавление нового запроса. @PostMapping (/requests): " +
-                 "createItemRequest(long {}, ItemRequestShortDto {})", userId, dto);
+                 "createItemRequest(long {}, ItemRequestShortDtoGW {})", userId, dto);
 
         return post("", userId, dto);
     }

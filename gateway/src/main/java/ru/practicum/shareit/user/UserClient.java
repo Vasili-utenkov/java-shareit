@@ -9,7 +9,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserDtoGW;
 
 @Service
 @Slf4j
@@ -27,8 +27,8 @@ public class UserClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> createUser(UserDto userDto) {
-        log.warn("UserClient:: Создание пользователя. @PostMapping (/users): createUser(UserDto {})", userDto);
+    public ResponseEntity<Object> createUser(UserDtoGW userDto) {
+        log.warn("UserClient:: Создание пользователя. @PostMapping (/users): createUser(UserDtoGW {})", userDto);
         return post("", userDto);
     }
 
@@ -44,9 +44,9 @@ public class UserClient extends BaseClient {
         return delete("/" + userId);
     }
 
-    public ResponseEntity<Object> updateUserByID(long userId, UserDto userDto) {
+    public ResponseEntity<Object> updateUserByID(long userId, UserDtoGW userDto) {
         log.warn("UserClient:: Изменение пользователя по коду пользователя. @PatchMapping (/users/{userId}): " +
-                "updateUserByID(long {}, UserDto {})", userId, userDto);
+                "updateUserByID(long {}, UserDtoGW {})", userId, userDto);
         return patch("/" + userId, userDto);
     }
 

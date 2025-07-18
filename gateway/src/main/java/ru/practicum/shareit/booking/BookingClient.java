@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-import ru.practicum.shareit.booking.dto.BookingShortDto;
+import ru.practicum.shareit.booking.dto.BookingShortDtoGW;
 import ru.practicum.shareit.client.BaseClient;
 import ru.practicum.shareit.enums.BookingState;
 
@@ -29,9 +29,9 @@ public class BookingClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> createBooking(long userId, BookingShortDto requestDto) {
+    public ResponseEntity<Object> createBooking(long userId, BookingShortDtoGW requestDto) {
         log.warn("BookingClient:: Добавление бронирования. @PostMapping: " +
-                        "bookItem(long {}, BookingShortDto {}) ",
+                        "bookItem(long {}, BookingShortDtoGW {}) ",
                 userId, requestDto);
         return post("", userId, requestDto);
     }

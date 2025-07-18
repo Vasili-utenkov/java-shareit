@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentCreateDto {
+public class CommentCreateDtoGW {
     @NotBlank(message = "Текст не может быть пустым")
     private String text;
 }

@@ -7,6 +7,7 @@ import ru.practicum.shareit.user.dto.UserMapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class ItemMapper {
@@ -40,7 +41,7 @@ public class ItemMapper {
 
 
     public static List<ItemDto> toDto(List<Item> items) {
-        return items.stream().map(ItemMapper::toDto).toList();
+        return items.stream().map(ItemMapper::toDto).collect(Collectors.toList());
     }
 
 
