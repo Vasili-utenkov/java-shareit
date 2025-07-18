@@ -31,11 +31,11 @@ public class ItemController {
     public ItemDto createItem(
             @RequestHeader("X-Sharer-User-Id") Long ownerId,
             @RequestBody ItemDto item) {
-        log.warn("Добавление новой вещи. @PostMapping (/items) ");
+        log.warn("SERVER:: Добавление новой вещи. @PostMapping (/items) ");
         log.warn("createItem(@RequestHeader(X-Sharer-User-Id) Long {}, @RequestBody @Valid ItemDto {})",
                 ownerId, item);
         ItemDto dto = itemService.createItem(ownerId, item);
-        log.warn("ИТОГ: Создали предмет " + dto);
+        log.warn("SERVER:: ИТОГ: Создали предмет " + dto);
         return dto;
     }
 
@@ -45,11 +45,11 @@ public class ItemController {
             @PathVariable Long itemId,
             @RequestBody ItemDto item
     ) {
-        log.warn("Редактирование вещи. @PatchMapping (/items/{itemId}) ");
+        log.warn("SERVER:: Редактирование вещи. @PatchMapping (/items/{itemId}) ");
         log.warn("updateItemByItemID(@RequestHeader(X-Sharer-User-Id) Long {}, @PathVariable Long {}, @RequestBody ItemDto {})",
                 ownerId, itemId, item);
         ItemDto dto = itemService.updateItemByItemID(ownerId, itemId, item);
-        log.warn("ИТОГ: Изменили предмет на " + dto);
+        log.warn("SERVER:: ИТОГ: Изменили предмет на " + dto);
         return dto;
     }
 
@@ -58,7 +58,7 @@ public class ItemController {
             @PathVariable Long itemId,
             @RequestHeader("X-Sharer-User-Id") Long ownerId
     ) {
-        log.warn("Удаление вещи. @DeleteMapping (/items/{itemId}) ");
+        log.warn("SERVER:: Удаление вещи. @DeleteMapping (/items/{itemId}) ");
         log.warn("deleteItem(@PathVariable Long {}, @RequestHeader(X-Sharer-User-Id) Long {})",
                 itemId, ownerId);
         itemService.deleteItem(itemId, ownerId);
@@ -68,11 +68,11 @@ public class ItemController {
     public ItemDto getItemByItemID(
             @PathVariable Long itemId
     ) {
-        log.warn("Просмотр информации о конкретной вещи по её идентификатору. @GetMapping (/items/{itemId}) ");
+        log.warn("SERVER:: Просмотр информации о конкретной вещи по её идентификатору. @GetMapping (/items/{itemId}) ");
         log.warn("getItemByItemID(@PathVariable Long {})",
                 itemId);
         ItemDto dto = itemService.getItemByItemID(itemId);
-        log.warn("ИТОГ: Просмотр информации о конкретной вещи " + dto);
+        log.warn("SERVER:: ИТОГ: Просмотр информации о конкретной вещи " + dto);
         return dto;
     }
 
@@ -80,7 +80,7 @@ public class ItemController {
     public List<ItemDto> getItemsListByOwner(
             @RequestHeader("X-Sharer-User-Id") Long ownerId
     ) {
-        log.warn("Просмотр владельцем списка всех его вещей с указанием названия и описания для каждой из них. @GetMapping (/items)");
+        log.warn("SERVER:: Просмотр владельцем списка всех его вещей с указанием названия и описания для каждой из них. @GetMapping (/items)");
         log.warn("getItemsListByOwner(@RequestHeader(X-Sharer-User-Id) Long {}",
                 ownerId);
         List<ItemDto> list = itemService.getItemsListByOwner(ownerId);
@@ -91,7 +91,7 @@ public class ItemController {
     public List<ItemDto> searchItemsByText(
             @RequestParam String text
     ) {
-        log.warn("Поиск вещи потенциальным арендатором по имени или описанию. @GetMapping (/items/search) ");
+        log.warn("SERVER:: Поиск вещи потенциальным арендатором по имени или описанию. @GetMapping (/items/search) ");
         log.warn("searchItemsByText(@RequestParam String {})",
                 text);
         List<ItemDto> list = itemService.getItemsListByText(text);
@@ -104,7 +104,7 @@ public class ItemController {
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @PathVariable Long itemId
     ) {
-        log.warn("Добавить коментарий по вещи. @PostMapping(/items/{itemId}/comment) ");
+        log.warn("SERVER:: Добавить коментарий по вещи. @PostMapping(/items/{itemId}/comment) ");
         log.warn("createComment(" +
                 "@Valid @RequestBody CommentCreateDto {}," +
                 "@RequestHeader(X-Sharer-User-Id) Long {}," +

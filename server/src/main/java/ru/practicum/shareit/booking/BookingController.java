@@ -31,11 +31,11 @@ public class BookingController {
             @RequestHeader("X-Sharer-User-Id") Long bookerId,
             @RequestBody BookingShortDto bookingDto
     ) {
-        log.warn("Добавление бронирования. @PostMapping (/bookings) ");
+        log.warn("SERVER:: Добавление бронирования. @PostMapping (/bookings) ");
         log.warn("createBooking( @RequestHeader(X-Sharer-User-Id) Long {}, @Valid @RequestBody BookingShortDto {} )",
                 bookerId, bookingDto);
         BookingDto dto = bookingService.createBooking(bookerId, bookingDto);
-        log.warn("ИТОГ: Создали бронь " + dto);
+        log.warn("SERVER:: ИТОГ: Создали бронь " + dto);
         return dto;
     }
 
@@ -45,7 +45,7 @@ public class BookingController {
             @PathVariable Long bookingId,
             @RequestParam Boolean approved
     ) {
-        log.warn("Подтверждение/отклонение бронирования. @PatchMapping (/bookings/{bookingId})");
+        log.warn("SERVER:: Подтверждение/отклонение бронирования. @PatchMapping (/bookings/{bookingId})");
         log.warn("approveBooking(" +
                 "@RequestHeader(X-Sharer-User-Id) Long {}," +
                 "@PathVariable Long {}," +
@@ -60,7 +60,7 @@ public class BookingController {
             @RequestHeader("X-Sharer-User-Id") Long bookerId,
             @PathVariable Long bookingId
     ) {
-        log.warn("Получение данных о бронировании по ID брони. @GetMapping (/bookings/{bookingId})");
+        log.warn("SERVER:: Получение данных о бронировании по ID брони. @GetMapping (/bookings/{bookingId})");
         log.warn("getBookingById(@RequestHeader(X-Sharer-User-Id) Long {}, @PathVariable Long {})",
                 bookerId, bookingId);
         BookingDto dto = bookingService.getBookingById(bookerId, bookingId);
@@ -72,7 +72,7 @@ public class BookingController {
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @RequestParam(name = "state", defaultValue = "ALL") BookingState state
     ) {
-        log.warn("Получение списка бронирований для пользователя. @GetMapping (/bookings)");
+        log.warn("SERVER:: Получение списка бронирований для пользователя. @GetMapping (/bookings)");
         log.warn("getUserBookings(@RequestHeader(X-Sharer-User-Id) Long {}," +
                         " @RequestParam(name = state, defaultValue = ALL) BookingState {})",
                 userId, state);
@@ -85,7 +85,7 @@ public class BookingController {
             @RequestHeader("X-Sharer-User-Id") Long ownerId,
             @RequestParam(name = "state", defaultValue = "ALL") BookingState state
     ) {
-        log.warn("Получение списка бронирований всех вещей по владельцу вещи. @GetMapping (/bookings/owner)");
+        log.warn("SERVER:: Получение списка бронирований всех вещей по владельцу вещи. @GetMapping (/bookings/owner)");
         log.warn("getOwnerBookings(@RequestHeader(X-Sharer-User-Id) Long {}," +
                         " @RequestParam(name = state, defaultValue = ALL) BookingState {})",
                 ownerId, state);
