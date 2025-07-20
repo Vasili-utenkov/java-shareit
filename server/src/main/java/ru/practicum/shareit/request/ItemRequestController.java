@@ -59,6 +59,9 @@ public class ItemRequestController {
                 userId, requestId);
 
         ItemRequestDto dto = itemRequestService.getItemRequest(requestId);
+
+
+
         return dto;
     }
 

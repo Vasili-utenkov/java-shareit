@@ -29,7 +29,6 @@ public class ItemDtoGW {
     private ItemRequestDtoGW request; // запрос (ItemRequest), если вещь создана в ответ на него
     private List<CommentDtoGW> comments;
 
-
     private BookingDtoGW lastBooking;
     private BookingDtoGW nextBooking;
 }

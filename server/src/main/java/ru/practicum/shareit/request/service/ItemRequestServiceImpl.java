@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.UserNotExistsException;
+import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestMapper;
@@ -22,11 +23,12 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     private final ItemRequestRepository itemRequestRepository;
     private final UserService userService;
+    private final ItemService itemService;
 
     /**
      * добавить новый запрос вещи
      *
-     * @param userId      ID пользователя
+     * @param userId              ID пользователя
      * @param itemRequestShortDto Содержание запроса
      * @return ItemRequestDto
      */
@@ -83,7 +85,14 @@ public class ItemRequestServiceImpl implements ItemRequestService {
      */
     @Override
     public ItemRequestDto getItemRequest(Long requestId) {
-        return ItemRequestMapper.toDto(validateItemRequestExists(requestId));
+
+        ItemRequestDto dto = ItemRequestMapper.toDto(validateItemRequestExists(requestId));
+
+        // вместе с данными об ответах на него
+        dto.setItems(itemService.getItemsListByRequest(requestId));
+
+        return dto;
+
     }
 
 

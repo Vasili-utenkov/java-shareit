@@ -29,28 +29,28 @@ public class BookingClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> createBooking(long userId, BookingShortDtoGW requestDto) {
+    public ResponseEntity<Object> createBooking(long bookerId, BookingShortDtoGW requestDto) {
         log.warn("BookingClient:: Добавление бронирования. @PostMapping: " +
                         "bookItem(long {}, BookingShortDtoGW {}) ",
-                userId, requestDto);
-        return post("", userId, requestDto);
+                bookerId, requestDto);
+        return post("", bookerId, requestDto);
     }
 
-    public ResponseEntity<Object> approveBooking(long userId, long bookingId, boolean state) {
+    public ResponseEntity<Object> approveBooking(long bookerId, long bookingId, boolean approved) {
         Map<String, Object> parameters = Map.of(
-                "approved", state
+                "approved", approved
         );
         log.warn("BookingClient::Подтверждение/отклонение бронирования. @PatchMapping: " +
                         "approveBooking(long {}, long {}, boolean {})",
-                userId, bookingId, state);
-        return get("/" + bookingId, userId, parameters);
+                bookerId, bookingId, approved);
+        return patch("/" + bookingId + "?approved=" + approved, bookerId, parameters, null);
     }
 
-    public ResponseEntity<Object> getBookingById(long userId, long bookingId) {
+    public ResponseEntity<Object> getBookingById(long bookerId, long bookingId) {
         log.warn("BookingClient::Получение данных о бронировании по ID брони. @GetMapping: " +
                         "getBookingById(long {}, long {}))",
-                userId, bookingId);
-        return get("/" + bookingId, userId);
+                bookerId, bookingId);
+        return get("/" + bookingId, bookerId);
     }
 
 
@@ -64,14 +64,14 @@ public class BookingClient extends BaseClient {
         return get("", userId, parameters);
     }
 
-    public ResponseEntity<Object> getOwnerBookings(long userId, BookingState stateParam) {
+    public ResponseEntity<Object> getOwnerBookings(long bookerId, BookingState stateParam) {
         log.warn("BookingClient::Получение списка бронирований всех вещей по владельцу вещи. @GetMapping:" +
                         " getOwnerBookings(long {}, BookingState {})",
-                userId, stateParam);
+                bookerId, stateParam);
         Map<String, Object> parameters = Map.of(
                 "state", stateParam
         );
-        return get("/owner", userId, parameters);
+        return get("/owner", bookerId, parameters);
     }
 
 

@@ -1,8 +1,9 @@
 package ru.practicum.shareit.item.service;
 
-import ru.practicum.shareit.comment.dto.CommentCreateDto;
+import ru.practicum.shareit.comment.dto.CommentShortDto;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemShortDto;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public interface ItemService {
      * @param itemDto данные по предмету
      * @return ItemDto
      */
-    ItemDto createItem(Long ownerId, ItemDto itemDto);
+    ItemDto createItem(Long ownerId, ItemShortDto itemDto);
 
     /**
      * получение предмета по коду предмета
@@ -75,11 +76,20 @@ public interface ItemService {
     /**
      * Добавить комментарий в предмет
      *
-     * @param commentCreateDto Комментарий
+     * @param commentShortDto Комментарий
      * @param userId           ID пользователя
      * @param itemId           ID предмета
      * @return CommentDto
      */
-    CommentDto addCommentToItem(CommentCreateDto commentCreateDto, Long userId, Long itemId);
+    CommentDto addCommentToItem(CommentShortDto commentShortDto, Long userId, Long itemId);
+
+
+    /**
+     *  Получение списка предметов по коду запроса
+     *
+     * @param requestId код запроса
+     * @return List<ItemDto>
+     */
+    List<ItemDto> getItemsListByRequest(Long requestId);
 
 }

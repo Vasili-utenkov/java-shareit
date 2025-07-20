@@ -1,5 +1,6 @@
 package ru.practicum.shareit.client;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -12,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class BaseClient {
     protected final RestTemplate rest;
 
@@ -47,6 +49,7 @@ public class BaseClient {
         return post(path, null, null, body);
     }
 
+
     protected <T> ResponseEntity<Object> post(String path, long userId, T body) {
         return post(path, userId, null, body);
     }
@@ -57,7 +60,6 @@ public class BaseClient {
 
 // PutMapping
 
-
     protected <T> ResponseEntity<Object> put(String path, long userId, T body) {
         return put(path, userId, null, body);
     }
@@ -67,7 +69,6 @@ public class BaseClient {
     }
 
 // PatchMapping
-
 
     protected <T> ResponseEntity<Object> patch(String path, T body) {
         return patch(path, null, null, body);
@@ -86,7 +87,6 @@ public class BaseClient {
     }
 
 // DeleteMapping
-
 
     protected ResponseEntity<Object> delete(String path) {
         return delete(path, null, null);

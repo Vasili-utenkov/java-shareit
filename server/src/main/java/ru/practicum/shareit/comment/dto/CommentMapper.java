@@ -22,7 +22,7 @@ public class CommentMapper {
                 .created(comment.getCreated()).build();
     }
 
-    public static Comment toEntity(CommentCreateDto dto, User user, Item item) {
+    public static Comment toEntity(CommentShortDto dto, User user, Item item) {
         return Comment.builder()
                 .author(user)
                 .text(dto.getText())

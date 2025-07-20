@@ -1,15 +1,16 @@
 package ru.practicum.shareit.item.service;
 
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.comment.CommentRepository;
-import ru.practicum.shareit.comment.dto.CommentCreateDto;
+import ru.practicum.shareit.comment.dto.CommentShortDto;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.comment.dto.CommentMapper;
 import ru.practicum.shareit.comment.model.Comment;
@@ -18,7 +19,9 @@ import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.item.dto.ItemShortDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserServiceImpl;
 
@@ -31,7 +34,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class ItemServiceImpl implements ItemService {
 
@@ -39,7 +41,22 @@ public class ItemServiceImpl implements ItemService {
     private final UserServiceImpl userService;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestService itemRequestService;
 
+    @Autowired
+    public ItemServiceImpl(
+            ItemRepository itemRepository,
+            UserServiceImpl userService,
+            BookingRepository bookingRepository,
+            CommentRepository commentRepository,
+            @Lazy ItemRequestService itemRequestService  // Lazy применяется здесь
+    ) {
+        this.itemRepository = itemRepository;
+        this.userService = userService;
+        this.bookingRepository = bookingRepository;
+        this.commentRepository = commentRepository;
+        this.itemRequestService = itemRequestService;
+    }
 
     /**
      * Создание предмета
@@ -49,11 +66,18 @@ public class ItemServiceImpl implements ItemService {
      * @return ItemDto
      */
     @Override
-    public ItemDto createItem(Long ownerId, ItemDto itemDto) {
-        log.warn("createItem(Long {}, ItemDto {})", ownerId, itemDto);
+    public ItemDto createItem(Long ownerId, ItemShortDto itemDto) {
+        log.warn("createItem(Long {}, ItemShortDtoGW {})", ownerId, itemDto);
         Item item = ItemMapper.toEntity(itemDto);
         // Проверка
         item.setOwner(userService.validateUserExists(ownerId));
+
+
+        Long requestId = itemDto.getRequestId();
+        if (requestId != null) {
+            item.setRequest(itemRequestService.validateItemRequestExists(requestId));
+        }
+
         return ItemMapper.toDto(itemRepository.save(item));
     }
 
@@ -210,18 +234,18 @@ public class ItemServiceImpl implements ItemService {
     /**
      * Добавить комментарий в предмет
      *
-     * @param commentCreateDto Комментарий
+     * @param commentShortDto Комментарий
      * @param userId           ID пользователя
      * @param itemId           ID предмета
      * @return CommentDto
      */
     @Override
-    public CommentDto addCommentToItem(CommentCreateDto commentCreateDto, Long userId, Long itemId) {
-        log.warn("addCommentToItem(CommentCreateDto {}, Long {}, Long {}})", commentCreateDto, userId, itemId);
+    public CommentDto addCommentToItem(CommentShortDto commentShortDto, Long userId, Long itemId) {
+        log.warn("addCommentToItem(CommentShortDto {}, Long {}, Long {}})", commentShortDto, userId, itemId);
 
         Item existingItem = validateItemExists(itemId);
         User author = userService.validateUserExists(userId);
-        Comment comment = commentRepository.save(CommentMapper.toEntity(commentCreateDto, author, existingItem));
+        Comment comment = commentRepository.save(CommentMapper.toEntity(commentShortDto, author, existingItem));
 
         // Проверка бронирований через репозиторий
         List<Booking> bookings = bookingRepository.findCompletedBookingsByUserAndItem(
@@ -244,5 +268,26 @@ public class ItemServiceImpl implements ItemService {
         itemDto.setComments(dtoList);
 
         return CommentMapper.toDto(commentRepository.save(comment));
+    }
+
+
+    /**
+     * Получение списка предметов по коду запроса
+     *
+     * @param requestId код запроса
+     * @return List<ItemDto>
+     */
+    @Override
+    public List<ItemDto> getItemsListByRequest(Long requestId) {
+
+        List<Item> list = itemRepository.findAllByRequestId(requestId);
+
+        log.warn("ПРОВЕРКА:: getItemsListByRequest(Long {})", requestId);
+        log.warn("ПРОВЕРКА:: getItemsListByRequest list = {}", list);
+
+        List<Item> listAll = itemRepository.findAll();
+        log.warn("ПРОВЕРКА:: getItemsListByRequest listAll = {}", listAll);
+
+        return ItemMapper.toDto(list);
     }
 }

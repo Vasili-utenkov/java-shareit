@@ -52,6 +52,7 @@ public class BookingController {
                 "@RequestParam Boolean {}" +
                 ")", bookerId, bookingId, approved);
         BookingDto dto = bookingService.approveBooking(bookerId, bookingId, approved);
+        log.warn("SERVER:: Подтверждение/отклонение бронирования - OK");
         return dto;
     }
 

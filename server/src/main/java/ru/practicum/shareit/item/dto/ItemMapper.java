@@ -25,6 +25,15 @@ public class ItemMapper {
                 .build();
     }
 
+    public static Item toEntity(ItemShortDto itemDto) {
+        return Item.builder()
+                .name(itemDto.getName())
+                .description(itemDto.getDescription())
+                .available(itemDto.getAvailable())
+                .build();
+    }
+
+
     public static ItemDto toDto(Item item) {
         return ItemDto.builder()
                 .id(item.getId())

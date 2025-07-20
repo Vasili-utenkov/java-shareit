@@ -9,8 +9,9 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
-import ru.practicum.shareit.comment.dto.CommentCreateDtoGW;
+import ru.practicum.shareit.comment.dto.CommentShortDtoGW;
 import ru.practicum.shareit.item.dto.ItemDtoGW;
+import ru.practicum.shareit.item.dto.ItemShortDtoGW;
 
 import java.util.Map;
 
@@ -31,9 +32,9 @@ public class ItemClient extends BaseClient {
     }
 
 
-    public ResponseEntity<Object> createItem(long userId, ItemDtoGW requestDto) {
+    public ResponseEntity<Object> createItem(long userId, ItemShortDtoGW requestDto) {
         log.warn("ItemClient:: Добавление новой вещи. @PostMapping (/items):" +
-                        " createItem(long {}, ItemDtoGW {})",
+                        " createItem(long {}, ItemShortDtoGW {})",
                 userId, requestDto);
         return post("", userId, requestDto);
     }
@@ -42,7 +43,7 @@ public class ItemClient extends BaseClient {
         log.warn("ItemClient:: Редактирование вещи. @PatchMapping (/items/{itemId}): " +
                         "updateItemByItemID(long {}, long {}, ItemDtoGW {})",
                 ownerId, itemId, item);
-        return patch("/" + itemId, ownerId, item);
+        return patch("/" + itemId, ownerId, null, item);
     }
 
     public ResponseEntity<Object> deleteItem(long itemId, long ownerId) {
@@ -71,14 +72,15 @@ public class ItemClient extends BaseClient {
         Map<String, Object> parameters = Map.of(
                 "text", text
         );
-        return get("/search", parameters);
+        return get("/search" + "?text=" + text, null, parameters);
     }
 
-    public ResponseEntity<Object> addCommentToItem(CommentCreateDtoGW dto, long userId, long itemId) {
+    public ResponseEntity<Object> addCommentToItem(CommentShortDtoGW dto, long userId, long itemId) {
         log.warn("ItemClient:: Добавить коментарий по вещи. @PostMapping(/items/{itemId}/comment): createComment(" +
-                        "CommentCreateDtoGW {}, long {}, long {})",
+                        "CommentShortDtoGW {}, long {}, long {})",
                         dto, userId, itemId);
-        return post("/" + itemId + "/comment)", userId, dto);
+
+        return post("/" + itemId + "/comment", userId, null, dto);
     }
 
 }

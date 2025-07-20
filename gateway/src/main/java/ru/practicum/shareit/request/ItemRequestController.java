@@ -31,6 +31,10 @@ public class ItemRequestController {
         log.warn("ItemRequestDtoGW createItemRequest(@RequestHeader(X-Sharer-User-Id) Long {}, @RequestBody ItemRequestShortDtoGW {}",
                 userId, itemRequestShortDtoGW);
         ResponseEntity<Object> response = itemRequestClient.createItemRequest(userId, itemRequestShortDtoGW);
+
+        // Логируем тело ответа
+        log.warn("GATEWAY:: Тело ответа: {}", response.getBody());
+
         log.warn("GATEWAY:: ИТОГ: Создали запрос " + response);
         return response;
     }
@@ -67,6 +71,10 @@ public class ItemRequestController {
                 userId, requestId);
 
         ResponseEntity<Object> response = itemRequestClient.getItemRequestById(userId, requestId);
+
+        // Логируем тело ответа
+        log.warn("GATEWAY:: Тело ответа: {}", response.getBody());
+
         return response;
     }
 

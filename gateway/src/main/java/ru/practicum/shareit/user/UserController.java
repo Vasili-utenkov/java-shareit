@@ -25,6 +25,10 @@ public class UserController {
         log.warn("GATEWAY:: Создание пользователя. @PostMapping (/users) ");
         log.warn("createUser(@Valid @RequestBody UserDtoGW {})", userDto);
         ResponseEntity<Object> response = userClient.createUser(userDto);
+
+        // Логируем тело ответа
+        log.warn("GATEWAY:: Тело ответа: {}", response.getBody());
+
         log.warn("GATEWAY:: ИТОГ: Создали пользователя " + response);
         return response;
     }

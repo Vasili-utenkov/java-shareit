@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.shareit.comment.dto.CommentCreateDto;
+import ru.practicum.shareit.comment.dto.CommentShortDto;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemShortDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class ItemController {
     @PostMapping
     public ItemDto createItem(
             @RequestHeader("X-Sharer-User-Id") Long ownerId,
-            @RequestBody ItemDto item) {
+            @RequestBody ItemShortDto item) {
         log.warn("SERVER:: Добавление новой вещи. @PostMapping (/items) ");
         log.warn("createItem(@RequestHeader(X-Sharer-User-Id) Long {}, @RequestBody @Valid ItemDto {})",
                 ownerId, item);
@@ -100,17 +101,17 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public CommentDto createComment(
-            @RequestBody CommentCreateDto commentCreateDto,
+            @PathVariable Long itemId,
             @RequestHeader("X-Sharer-User-Id") Long userId,
-            @PathVariable Long itemId
-    ) {
+            @RequestBody CommentShortDto commentShortDto
+            ) {
         log.warn("SERVER:: Добавить коментарий по вещи. @PostMapping(/items/{itemId}/comment) ");
         log.warn("createComment(" +
-                "@Valid @RequestBody CommentCreateDto {}," +
-                "@RequestHeader(X-Sharer-User-Id) Long {}," +
-                "@PathVariable Long {})",
-                commentCreateDto, userId, itemId);
-        CommentDto dto = itemService.addCommentToItem(commentCreateDto, userId, itemId);
+                        "@Valid @RequestBody CommentShortDto {}," +
+                        "@RequestHeader(X-Sharer-User-Id) Long {}," +
+                        "@PathVariable Long {})",
+                commentShortDto, userId, itemId);
+        CommentDto dto = itemService.addCommentToItem(commentShortDto, userId, itemId);
         log.warn("ИТОГ: Создали комментарий: " + dto);
         return dto;
     }
