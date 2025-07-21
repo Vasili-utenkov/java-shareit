@@ -278,13 +278,6 @@ public class ItemServiceImpl implements ItemService {
     public List<Item> getItemsListByRequest(Long requestId) {
 
         List<Item> list = itemRepository.findAllByRequestId(requestId);
-
-        log.warn("ПРОВЕРКА:: getItemsListByRequest(Long {})", requestId);
-        log.warn("ПРОВЕРКА:: getItemsListByRequest list = {}", list);
-
-        List<Item> listAll = itemRepository.findAll();
-        log.warn("ПРОВЕРКА:: getItemsListByRequest listAll = {}", listAll);
-
         return list;
     }
 }
