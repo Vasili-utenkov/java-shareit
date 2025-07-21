@@ -285,6 +285,6 @@ public class ItemServiceImpl implements ItemService {
         List<Item> listAll = itemRepository.findAll();
         log.warn("ПРОВЕРКА:: getItemsListByRequest listAll = {}", listAll);
 
-        return listAll;
+        return list;
     }
 }
