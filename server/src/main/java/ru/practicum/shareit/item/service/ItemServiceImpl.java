@@ -26,11 +26,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserServiceImpl;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -279,5 +275,27 @@ public class ItemServiceImpl implements ItemService {
 
         List<Item> list = itemRepository.findAllByRequestId(requestId);
         return list;
+    }
+
+    /**
+     * Получение списка предметов по кодам запросов
+     *
+     * @param requestIds список кодов запросов
+     * @return Map<Long, List<Item>>
+     */
+    @Override
+    public Map<Long, List<Item>> getItemsByRequestIds(List<Long> requestIds) {
+
+        // Список пуст?
+        if (requestIds == null || requestIds.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        List<Item> items = itemRepository.findAllByRequestIdIn(requestIds);
+        return items.stream()
+                .filter(item -> item.getRequest() != null)
+                .collect(Collectors.groupingBy(
+                        item -> item.getRequest().getId()
+                ));
     }
 }

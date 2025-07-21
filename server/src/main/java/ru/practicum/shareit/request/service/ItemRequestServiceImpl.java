@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.UserNotExistsException;
 import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
@@ -14,7 +15,8 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
-import java.util.List;
+import java.util.*;
+
 
 @Slf4j
 @Service
@@ -56,14 +58,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         List<ItemRequest> list = itemRequestRepository.findItemRequestsByUser(userId);
 
         // вместе с данными об ответах на него
-
-        return list.stream()
-                .map(itemRequest -> {
-                    ItemRequestDto dto = ItemRequestMapper.toDto(itemRequest);
-                    dto.setItems(ItemMapper.toDto(itemService.getItemsListByRequest(itemRequest.getId())));
-                    return dto;
-                })
-                .toList();
+        return getRequestWithItemsList(list);
     }
 
     /**
@@ -79,13 +74,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         User user = userService.validateUserExists(userId);
         List<ItemRequest> list = itemRequestRepository.findItemRequestsAllUser(userId);
 
-        return list.stream()
-                .map(itemRequest -> {
-                    ItemRequestDto dto = ItemRequestMapper.toDto(itemRequest);
-                    dto.setItems(ItemMapper.toDto(itemService.getItemsListByRequest(itemRequest.getId())));
-                    return dto;
-                })
-                .toList();
+        // вместе с данными об ответах на него
+        return getRequestWithItemsList(list);
     }
 
 
@@ -125,4 +115,31 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return itemRequestRepository.findById(requestId)
                 .orElseThrow(() -> new UserNotExistsException("Запрос с ID " + requestId + " не найден"));
     }
+
+    private List<ItemRequestDto> getRequestWithItemsList(List<ItemRequest> requestList) {
+        log.warn("getRequestWithItemsList(List<ItemRequest> {})", requestList);
+
+        // Список запросов пуст
+        if (requestList.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // Список кодов запросов
+        List<Long> requestIds = requestList.stream()
+                .map(ItemRequest::getId)
+                .toList();
+
+        // Предметы по списку запросов
+        Map<Long, List<Item>> itemsByRequest = itemService.getItemsByRequestIds(requestIds);
+
+        return requestList.stream()
+                .map(itemRequest -> {
+                    ItemRequestDto dto = ItemRequestMapper.toDto(itemRequest);
+                    List<Item> items = itemsByRequest.getOrDefault(itemRequest.getId(), Collections.emptyList());
+                    dto.setItems(ItemMapper.toDto(items));
+                    return dto;
+                })
+                .toList();
+    }
+
 }

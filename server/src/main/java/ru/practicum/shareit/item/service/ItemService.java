@@ -7,6 +7,7 @@ import ru.practicum.shareit.item.dto.ItemShortDto;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ItemService {
 
@@ -91,5 +92,15 @@ public interface ItemService {
      * @return List<ItemDto>
      */
     List<Item> getItemsListByRequest(Long requestId);
+
+
+    /**
+     *  Получение списка предметов по кодам запросов
+     *
+     * @param requestIds список кодов запросов
+     * @return Map<Long, List<Item>>
+     */
+    Map<Long, List<Item>> getItemsByRequestIds(List<Long> requestIds);
+
 
 }
