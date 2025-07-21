@@ -19,15 +19,20 @@ public class ItemRequestMapper {
     }
 
 
-
-
     public static ItemRequest toEntity(ItemRequestDto dto) {
         return ItemRequest.builder()
                 .id(dto.getId())
                 .description(dto.getDescription())
                 .created(dto.getCreated() != null ? dto.getCreated() : LocalDateTime.now())
-                // user устанавливается отдельно!
                 .build();
     }
+
+    public static ItemRequest toEntity(ItemRequestShortDto dto) {
+        return ItemRequest.builder()
+                .description(dto.getDescription())
+                .created(LocalDateTime.now())
+                .build();
+    }
+
 
 }

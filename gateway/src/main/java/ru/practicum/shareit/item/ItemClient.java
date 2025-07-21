@@ -13,6 +13,7 @@ import ru.practicum.shareit.comment.dto.CommentShortDtoGW;
 import ru.practicum.shareit.item.dto.ItemDtoGW;
 import ru.practicum.shareit.item.dto.ItemShortDtoGW;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -69,6 +70,11 @@ public class ItemClient extends BaseClient {
     public ResponseEntity<Object> getItemsByText(String text) {
         log.warn("ItemClient:: Поиск вещи потенциальным арендатором по имени или описанию. " +
                 "@GetMapping (/items/search): searchItemsByText(String {})", text);
+
+        if (text == null || text.isBlank()) {
+            return ResponseEntity.ok(List.of());
+        }
+
         Map<String, Object> parameters = Map.of(
                 "text", text
         );

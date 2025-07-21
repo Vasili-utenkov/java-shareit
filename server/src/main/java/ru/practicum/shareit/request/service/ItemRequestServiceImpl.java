@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.UserNotExistsException;
+import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
@@ -13,7 +14,6 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -36,11 +36,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public ItemRequestDto createItemRequest(Long userId, ItemRequestShortDto itemRequestShortDto) {
         log.warn("createItemRequest(Long {}, ItemRequestShortDto {})", userId, itemRequestShortDto);
         User user = userService.validateUserExists(userId);
-        ItemRequest itemRequest = ItemRequest.builder()
-                .user(user)
-                .description(itemRequestShortDto.getDescription())
-                .created(LocalDateTime.now())
-                .build();
+
+        ItemRequest itemRequest = ItemRequestMapper.toEntity(itemRequestShortDto);
+        itemRequest.setUser(user);
         return ItemRequestMapper.toDto(itemRequestRepository.save(itemRequest));
     }
 
@@ -57,7 +55,15 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         User user = userService.validateUserExists(userId);
         List<ItemRequest> list = itemRequestRepository.findItemRequestsByUser(userId);
 
-        return list.stream().map(ItemRequestMapper::toDto).toList();
+        // вместе с данными об ответах на него
+
+        return list.stream()
+                .map(itemRequest -> {
+                    ItemRequestDto dto = ItemRequestMapper.toDto(itemRequest);
+                    dto.setItems(ItemMapper.toDto(itemService.getItemsListByRequest(itemRequest.getId())));
+                    return dto;
+                })
+                .toList();
     }
 
     /**
@@ -73,7 +79,13 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         User user = userService.validateUserExists(userId);
         List<ItemRequest> list = itemRequestRepository.findItemRequestsAllUser(userId);
 
-        return list.stream().map(ItemRequestMapper::toDto).toList();
+        return list.stream()
+                .map(itemRequest -> {
+                    ItemRequestDto dto = ItemRequestMapper.toDto(itemRequest);
+                    dto.setItems(ItemMapper.toDto(itemService.getItemsListByRequest(itemRequest.getId())));
+                    return dto;
+                })
+                .toList();
     }
 
 
@@ -89,7 +101,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         ItemRequestDto dto = ItemRequestMapper.toDto(validateItemRequestExists(requestId));
 
         // вместе с данными об ответах на него
-        dto.setItems(itemService.getItemsListByRequest(requestId));
+        dto.setItems(ItemMapper.toDto(itemService.getItemsListByRequest(requestId)));
 
         return dto;
 
@@ -97,7 +109,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
 
     /**
-     * Проверка переданого в поиск кода пользователя
+     * Проверка переданного в поиск кода запроса
      *
      * @param requestId ID запроса
      */
@@ -106,11 +118,11 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         log.warn("validateUserId(Long {})", requestId);
         // Проверка на null ID
         if (requestId == null) {
-            throw new IllegalArgumentException("ID пользователя не может быть null");
+            throw new IllegalArgumentException("ID запроса не может быть null");
         }
 
         // Проверка существования пользователя
         return itemRequestRepository.findById(requestId)
-                .orElseThrow(() -> new UserNotExistsException("Пользователь с ID " + requestId + " не найден"));
+                .orElseThrow(() -> new UserNotExistsException("Запрос с ID " + requestId + " не найден"));
     }
 }

@@ -191,9 +191,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getItemsListByText(String text) {
         log.warn("getItemsListByText(String {})", text);
-        if (text == null || text.isBlank()) {
-            return List.of();
-        }
         List<ItemDto> list = ItemMapper.toDto(itemRepository.findAvailableByText(text.toLowerCase(Locale.ROOT)));
         return list;
     }
@@ -275,10 +272,10 @@ public class ItemServiceImpl implements ItemService {
      * Получение списка предметов по коду запроса
      *
      * @param requestId код запроса
-     * @return List<ItemDto>
+     * @return List<Item>
      */
     @Override
-    public List<ItemDto> getItemsListByRequest(Long requestId) {
+    public List<Item> getItemsListByRequest(Long requestId) {
 
         List<Item> list = itemRepository.findAllByRequestId(requestId);
 
@@ -288,6 +285,6 @@ public class ItemServiceImpl implements ItemService {
         List<Item> listAll = itemRepository.findAll();
         log.warn("ПРОВЕРКА:: getItemsListByRequest listAll = {}", listAll);
 
-        return ItemMapper.toDto(list);
+        return listAll;
     }
 }

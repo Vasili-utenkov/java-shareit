@@ -90,6 +90,6 @@ public interface ItemService {
      * @param requestId код запроса
      * @return List<ItemDto>
      */
-    List<ItemDto> getItemsListByRequest(Long requestId);
+    List<Item> getItemsListByRequest(Long requestId);
 
 }
