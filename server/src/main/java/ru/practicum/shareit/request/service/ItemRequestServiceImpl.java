@@ -116,6 +116,13 @@ public class ItemRequestServiceImpl implements ItemRequestService {
                 .orElseThrow(() -> new UserNotExistsException("Запрос с ID " + requestId + " не найден"));
     }
 
+
+    /**
+     * Обогащение запросов данными по предметам
+     *
+     * @param requestList Список запросов
+     * @return List<ItemRequestDto>
+     */
     private List<ItemRequestDto> getRequestWithItemsList(List<ItemRequest> requestList) {
         log.warn("getRequestWithItemsList(List<ItemRequest> {})", requestList);
 
