@@ -1,0 +1,119 @@
+package ru.practicum.shareit.item;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.shareit.comment.dto.CommentShortDto;
+import ru.practicum.shareit.comment.dto.CommentDto;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemShortDto;
+import ru.practicum.shareit.item.service.ItemService;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/items2")
+@RequiredArgsConstructor
+@Slf4j
+public class ItemController {
+
+    private final ItemService itemService;
+
+    @PostMapping
+    public ItemDto createItem(
+            @RequestHeader("X-Sharer-User-Id") Long ownerId,
+            @RequestBody ItemShortDto item) {
+        log.warn("SERVER:: Добавление новой вещи. @PostMapping (/items) ");
+        log.warn("createItem(@RequestHeader(X-Sharer-User-Id) Long {}, @RequestBody @Valid ItemDto {})",
+                ownerId, item);
+        ItemDto dto = itemService.createItem(ownerId, item);
+        log.warn("SERVER:: ИТОГ: Создали предмет " + dto);
+        return dto;
+    }
+
+    @PatchMapping("/{itemId}")
+    public ItemDto updateItemByItemID(
+            @RequestHeader("X-Sharer-User-Id") Long ownerId,
+            @PathVariable Long itemId,
+            @RequestBody ItemDto item
+    ) {
+        log.warn("SERVER:: Редактирование вещи. @PatchMapping (/items/{itemId}) ");
+        log.warn("updateItemByItemID(@RequestHeader(X-Sharer-User-Id) Long {}, @PathVariable Long {}, @RequestBody ItemDto {})",
+                ownerId, itemId, item);
+        ItemDto dto = itemService.updateItemByItemID(ownerId, itemId, item);
+        log.warn("SERVER:: ИТОГ: Изменили предмет на " + dto);
+        return dto;
+    }
+
+    @DeleteMapping("/{itemId}")
+    public void deleteItem(
+            @PathVariable Long itemId,
+            @RequestHeader("X-Sharer-User-Id") Long ownerId
+    ) {
+        log.warn("SERVER:: Удаление вещи. @DeleteMapping (/items/{itemId}) ");
+        log.warn("deleteItem(@PathVariable Long {}, @RequestHeader(X-Sharer-User-Id) Long {})",
+                itemId, ownerId);
+        itemService.deleteItem(itemId, ownerId);
+    }
+
+    @GetMapping("/{itemId}")
+    public ItemDto getItemByItemID(
+            @PathVariable Long itemId
+    ) {
+        log.warn("SERVER:: Просмотр информации о конкретной вещи по её идентификатору. @GetMapping (/items/{itemId}) ");
+        log.warn("getItemByItemID(@PathVariable Long {})",
+                itemId);
+        ItemDto dto = itemService.getItemByItemID(itemId);
+        log.warn("SERVER:: ИТОГ: Просмотр информации о конкретной вещи " + dto);
+        return dto;
+    }
+
+    @GetMapping
+    public List<ItemDto> getItemsListByOwner(
+            @RequestHeader("X-Sharer-User-Id") Long ownerId
+    ) {
+        log.warn("SERVER:: Просмотр владельцем списка всех его вещей с указанием названия и описания для каждой из них. @GetMapping (/items)");
+        log.warn("getItemsListByOwner(@RequestHeader(X-Sharer-User-Id) Long {}",
+                ownerId);
+        List<ItemDto> list = itemService.getItemsListByOwner(ownerId);
+        return list;
+    }
+
+    @GetMapping("/search")
+    public List<ItemDto> searchItemsByText(
+            @RequestParam String text
+    ) {
+        log.warn("SERVER:: Поиск вещи потенциальным арендатором по имени или описанию. @GetMapping (/items/search) ");
+        log.warn("searchItemsByText(@RequestParam String {})",
+                text);
+        List<ItemDto> list = itemService.getItemsListByText(text);
+        return list;
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto createComment(
+            @PathVariable Long itemId,
+            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @RequestBody CommentShortDto commentShortDto
+            ) {
+        log.warn("SERVER:: Добавить коментарий по вещи. @PostMapping(/items/{itemId}/comment) ");
+        log.warn("createComment(" +
+                        "@Valid @RequestBody CommentShortDto {}," +
+                        "@RequestHeader(X-Sharer-User-Id) Long {}," +
+                        "@PathVariable Long {})",
+                commentShortDto, userId, itemId);
+        CommentDto dto = itemService.addCommentToItem(commentShortDto, userId, itemId);
+        log.warn("ИТОГ: Создали комментарий: " + dto);
+        return dto;
+    }
+
+}
